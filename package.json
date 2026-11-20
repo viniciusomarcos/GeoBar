@@ -18,5 +18,8 @@
     "test:coverage": "pnpm --filter geobar-frontend test:coverage",
     "test:e2e": "pnpm --filter geobar-frontend test:e2e",
     "test:e2e:ui": "pnpm --filter geobar-frontend test:e2e:ui"
+  },
+  "devDependencies": {
+    "vercel": "66.5.0"
   }
 }
