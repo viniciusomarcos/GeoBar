@@ -12,3 +12,14 @@ permissions:
 jobs:
   checks:
     uses: ./.github/workflows/frontend-checks.yml
+
+  deploy:
+    needs: checks
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      environment: production
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

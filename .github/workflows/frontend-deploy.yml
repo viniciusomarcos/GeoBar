@@ -1,0 +1,76 @@
+name: Frontend deployment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+      VERCEL_PROJECT_ID:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-${{ inputs.environment }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ inputs.environment == 'preview' }}
+
+jobs:
+  deploy:
+    name: Deploy frontend (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ENVIRONMENT: ${{ inputs.environment }}
+      CYPRESS_INSTALL_BINARY: '0'
+    outputs:
+      url: ${{ steps.deployment.outputs.url }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          for secret_name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [[ -z "${!secret_name}" ]]; then
+              echo "::error::Missing GitHub Actions secret: $secret_name"
+              exit 1
+            fi
+          done
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Pull Vercel project settings
+        run: pnpm exec vercel pull --yes --environment="$VERCEL_ENVIRONMENT" --token="$VERCEL_TOKEN"
+
+      - name: Build Vercel deployment output
+        run: pnpm exec vercel build --environment="$VERCEL_ENVIRONMENT" --token="$VERCEL_TOKEN"
+
+      - name: Deploy prebuilt application
+        id: deployment
+        shell: bash
+        run: |
+          deployment_url=$(pnpm exec vercel deploy --prebuilt --environment="$VERCEL_ENVIRONMENT" --token="$VERCEL_TOKEN")
+          printf 'url=%s\n' "$deployment_url" >> "$GITHUB_OUTPUT"
+          printf 'Frontend %s deployment: %s\n' "$VERCEL_ENVIRONMENT" "$deployment_url" >> "$GITHUB_STEP_SUMMARY"
