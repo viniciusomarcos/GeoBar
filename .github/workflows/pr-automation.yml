@@ -1,0 +1,44 @@
+name: PR automation
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  issues: write
+
+jobs:
+  assign-author:
+    name: Assign PR author
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Assign the author when the PR has no assignees
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const pr = context.payload.pull_request
+
+            if (!pr) {
+              core.info('Not a pull request, skipping assignee automation.')
+              return
+            }
+
+            if (pr.assignees?.length > 0) {
+              core.info('PR already has assignees, skipping.')
+              return
+            }
+
+            const author = pr.user.login
+
+            try {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                assignees: [author]
+              })
+              core.info(`Assigned PR #${pr.number} to ${author}`)
+            } catch (error) {
+              core.warning(`Unable to assign PR author ${author}: ${error.message}`)
+            }

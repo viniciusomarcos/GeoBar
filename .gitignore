@@ -20,9 +20,18 @@ env/
 htmlcov/
 
 # Node / Frontend
-frontend/node_modules/
+node_modules/
+.pnpm-store/
 frontend/dist/
 frontend/.vite/
+frontend/.next/
+frontend/out/
+frontend/coverage/
+frontend/cypress/screenshots/
+frontend/cypress/videos/
+frontend/cypress/results/
+frontend/next-env.d.ts
+*.tsbuildinfo
 npm-debug.log*
 
 # Vercel
@@ -33,3 +42,5 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+.vercel
+.env*

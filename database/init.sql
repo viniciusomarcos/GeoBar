@@ -1,4 +1,4 @@
--- GeoBar: Schema inicial com PostGIS
+-- GeoBar: initial PostGIS schema
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TABLE IF NOT EXISTS bars (
@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS bars (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Índice espacial GIST para acelerar ST_DWithin / ST_Distance / buscas por área
+-- Spatial GiST index for ST_DWithin, ST_Distance, and area queries
 CREATE INDEX IF NOT EXISTS idx_bars_location_gist
     ON bars
     USING GIST (location);
 
--- Índices auxiliares para filtros futuros (categoria e origem dos dados)
+-- Supporting indexes for future category and data source filters
 CREATE INDEX IF NOT EXISTS idx_bars_category ON bars (category);
 CREATE INDEX IF NOT EXISTS idx_bars_source ON bars (source);

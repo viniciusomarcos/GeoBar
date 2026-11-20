@@ -1,0 +1,23 @@
+name: Frontend PR
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  checks:
+    uses: ./.github/workflows/frontend-checks.yml
+
+  deploy:
+    needs: checks
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    uses: ./.github/workflows/frontend-deploy.yml
+    with:
+      environment: preview
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
