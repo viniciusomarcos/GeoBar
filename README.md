@@ -63,13 +63,12 @@ Cypress uses port **4173** and requires its
 [system dependencies](https://docs.cypress.io/app/get-started/install-cypress#Linux-Prerequisites).
 
 CI runs on PR updates and pushes to `main`, on Linux, macOS, and Windows.
-To activate Codecov, enable the repository in Codecov and set the GitHub Actions
-variable `CODECOV_ENABLED=true`. The coverage badge follows `main`.
+Coverage uploads to Codecov automatically; enable the repository in Codecov.
+The coverage badge follows `main`.
 
 ## Deployment
 
-On Vercel, select `frontend` as the Root Directory and enable access to files
-outside it for the pnpm workspace. Use `pnpm install --frozen-lockfile` and
-`pnpm build`; set `CYPRESS_INSTALL_BINARY=0` in the build environment.
+Production (`main`): [geo-bar.vercel.app](https://geo-bar.vercel.app).
+
 
 Hero photo: [KC Shum / Unsplash](https://unsplash.com/photos/jwowyIij6ss).
