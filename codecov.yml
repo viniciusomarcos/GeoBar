@@ -1,0 +1,26 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  range: '80...100'
+  status:
+    project:
+      frontend:
+        target: 80%
+        flags: [frontend]
+    patch:
+      frontend:
+        target: 80%
+        flags: [frontend]
+
+flags:
+  frontend:
+    paths: [frontend/src/]
+    carryforward: false
+
+comment:
+  layout: 'reach,diff,flags,files'
+  behavior: default
+  require_base: false
+  require_head: true

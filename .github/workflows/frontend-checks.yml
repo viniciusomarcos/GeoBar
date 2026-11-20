@@ -1,0 +1,84 @@
+name: Frontend checks
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  frontend:
+    name: Frontend (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check lint and formatting
+        run: pnpm lint
+
+      - name: Check TypeScript types
+        run: pnpm typecheck
+
+      - name: Run unit tests with coverage
+        run: pnpm test:coverage
+
+      - name: Build the production application
+        run: pnpm build
+
+      - name: Verify Cypress binary
+        run: pnpm exec cypress verify
+
+      - name: Run end-to-end tests
+        run: pnpm test:e2e
+
+      - name: Upload frontend coverage to Codecov
+        if: >-
+          matrix.os == 'ubuntu-latest' &&
+          vars.CODECOV_ENABLED == 'true' &&
+          (github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository)
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-${{ github.event_name }}-${{ github.run_id }}
+          disable_search: true
+          fail_ci_if_error: true
+
+      - name: Upload test and coverage reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: frontend-reports-${{ matrix.os }}
+          path: |
+            frontend/coverage/
+            frontend/cypress/results/
+            frontend/cypress/screenshots/
+            frontend/cypress/videos/
+          retention-days: 14
