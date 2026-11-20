@@ -1,0 +1,22 @@
+{
+  "name": "geobar",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "pnpm --filter geobar-frontend start",
+    "dev": "pnpm --filter geobar-frontend dev",
+    "build": "pnpm --filter geobar-frontend build",
+    "start:prod": "pnpm --filter geobar-frontend start:prod",
+    "lint": "pnpm --filter geobar-frontend lint",
+    "format": "pnpm --filter geobar-frontend format",
+    "typecheck": "pnpm --filter geobar-frontend typecheck",
+    "test": "pnpm --filter geobar-frontend test",
+    "test:watch": "pnpm --filter geobar-frontend test:watch",
+    "test:coverage": "pnpm --filter geobar-frontend test:coverage",
+    "test:e2e": "pnpm --filter geobar-frontend test:e2e",
+    "test:e2e:ui": "pnpm --filter geobar-frontend test:e2e:ui"
+  }
+}

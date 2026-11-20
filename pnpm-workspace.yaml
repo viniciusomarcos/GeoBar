@@ -1,0 +1,7 @@
+packages:
+  - frontend
+
+onlyBuiltDependencies:
+  - cypress
+  - esbuild
+  - sharp
