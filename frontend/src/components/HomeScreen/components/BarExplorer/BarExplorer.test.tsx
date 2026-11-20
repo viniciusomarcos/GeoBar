@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { renderWithIntl as render } from '@/test/render'
-import { BarExplorer } from './bar-explorer'
+import { BarExplorer } from './BarExplorer'
 
 describe('BarExplorer', () => {
   it('translates search, places, and pluralized results into Portuguese', async () => {

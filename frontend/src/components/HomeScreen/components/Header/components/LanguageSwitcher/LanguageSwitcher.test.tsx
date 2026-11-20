@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderWithIntl } from '@/test/render'
-import { LanguageSwitcher } from './language-switcher'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 describe('LanguageSwitcher', () => {
   it('links to both languages and identifies English as active', () => {

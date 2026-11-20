@@ -1,4 +1,4 @@
-import type { DemoBar } from '@/data/demo-bars'
+import type { DemoBar } from '@/data/demoBars'
 
 const normalize = (value: string) =>
   value
@@ -7,11 +7,11 @@ const normalize = (value: string) =>
     .toLowerCase()
     .trim()
 
-export function filterBars(
+export const filterBars = (
   bars: ReadonlyArray<DemoBar>,
   query: string,
   neighborhood: string | null
-): Array<DemoBar> {
+): Array<DemoBar> => {
   const normalizedQuery = normalize(query)
 
   return bars.filter((bar) => {

@@ -31,7 +31,7 @@ const places = [
   }
 ] as const
 
-export function getDemoBars(locale: Locale): Array<DemoBar> {
+export const getDemoBars = (locale: Locale): Array<DemoBar> => {
   const translations = getMessages(locale).Places
 
   return places.map((place) => ({ ...place, ...translations[place.id] }))

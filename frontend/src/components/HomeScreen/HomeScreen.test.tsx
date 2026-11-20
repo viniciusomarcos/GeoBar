@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderWithIntl as render } from '@/test/render'
-import { HomeScreen } from './home-screen'
+import { HomeScreen } from './HomeScreen'
 
 describe('HomeScreen', () => {
   it('introduces GeoBar and links visitors to the collection', () => {

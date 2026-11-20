@@ -11,13 +11,12 @@ type LayoutProps = Readonly<{
   params: Promise<{ locale: string }>
 }>
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
-}
+export const generateStaticParams = () =>
+  routing.locales.map((locale) => ({ locale }))
 
-export async function generateMetadata({
+export const generateMetadata = async ({
   params
-}: Pick<LayoutProps, 'params'>): Promise<Metadata> {
+}: Pick<LayoutProps, 'params'>): Promise<Metadata> => {
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) {
     notFound()
@@ -31,7 +30,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function LocaleLayout({ children, params }: LayoutProps) {
+const LocaleLayout = async ({ children, params }: LayoutProps) => {
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) {
     notFound()
@@ -52,3 +51,5 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     </html>
   )
 }
+
+export default LocaleLayout

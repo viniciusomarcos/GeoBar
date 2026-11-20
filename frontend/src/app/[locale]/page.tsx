@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation'
 import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { HomeScreen } from '@/components/home-screen'
+import { HomeScreen } from '@/components/HomeScreen'
 import { routing } from '@/i18n/routing'
 
-export default async function HomePage({
+const HomePage = async ({
   params
-}: Readonly<{ params: Promise<{ locale: string }> }>) {
+}: Readonly<{ params: Promise<{ locale: string }> }>) => {
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) {
     notFound()
@@ -15,3 +15,5 @@ export default async function HomePage({
 
   return <HomeScreen />
 }
+
+export default HomePage

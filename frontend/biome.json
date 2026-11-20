@@ -57,6 +57,35 @@
       },
       "complexity": {
         "useArrowFunction": "error"
+      },
+      "correctness": {
+        "noRestrictedElements": {
+          "level": "error",
+          "options": {
+            "elements": {
+              "a": "Use Pressable for links.",
+              "button": "Use Pressable for actions.",
+              "Link": "Use Pressable for navigation.",
+              "p": "Use Text for typography.",
+              "span": "Use Text for inline content.",
+              "strong": "Use Text with as=strong.",
+              "small": "Use Text with as=small.",
+              "em": "Use Text with as=em.",
+              "b": "Use Text with as=b.",
+              "i": "Use Text with as=i.",
+              "h1": "Use Text with as=h1.",
+              "h2": "Use Text with as=h2.",
+              "h3": "Use Text with as=h3.",
+              "h4": "Use Text with as=h4.",
+              "h5": "Use Text with as=h5.",
+              "h6": "Use Text with as=h6.",
+              "figcaption": "Use Text with as=figcaption.",
+              "label": "Use Text with as=label.",
+              "legend": "Use Text with as=legend.",
+              "code": "Use Text with as=code."
+            }
+          }
+        }
       }
     }
   },
@@ -82,5 +111,21 @@
     "parser": {
       "tailwindDirectives": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/components/Pressable/**",
+        "src/components/Text/**",
+        "src/**/*.test.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noRestrictedElements": "off"
+          }
+        }
+      }
+    }
+  ]
 }

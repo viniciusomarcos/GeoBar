@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { getDemoBars } from '@/data/demo-bars'
-import { filterBars } from './filter-bars'
+import { getDemoBars } from '@/data/demoBars'
+import { filterBars } from './filterBars'
 
 const demoBars = getDemoBars('en')
 
