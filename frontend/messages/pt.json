@@ -1,0 +1,79 @@
+{
+  "Metadata": {
+    "title": "GeoBar — Encontre seu próximo buteco",
+    "description": "Um novo jeito de explorar os bares e bairros de Belo Horizonte. Encontre seu próximo buteco com o GeoBar."
+  },
+  "Navigation": {
+    "skip": "Pular para o conteúdo",
+    "home": "Página inicial do GeoBar",
+    "main": "Navegação principal",
+    "about": "A ideia",
+    "explore": "Explore o GeoBar",
+    "language": "Idioma"
+  },
+  "Hero": {
+    "location": "Belo Horizonte, Minas Gerais",
+    "titleFirst": "Encontre seu",
+    "titleSecond": "próximo",
+    "titleAccent": "buteco.",
+    "description": "O melhor de BH está logo ali na esquina. Descubra um novo lugar favorito para uma bebida gelada, um petisco compartilhado e uma boa história.",
+    "explore": "Encontre seu próximo lugar",
+    "footnoteFirst": "Cidade grande. Mesas pequenas.",
+    "footnoteSecond": "Boa companhia sem fim.",
+    "photoAlt": "Luminárias aconchegantes sobre o balcão de madeira de um bar",
+    "photoIntro": "Puxe uma cadeira.",
+    "photoFirst": "Sempre cabe",
+    "photoSecond": "mais um.",
+    "stamp": "Feito para",
+    "noteTitle": "Uma cidade para explorar",
+    "noteDescription": "Um bairro de cada vez."
+  },
+  "Ribbon": {
+    "food": "Comida boa.",
+    "drinks": "Bebida gelada.",
+    "company": "Companhia melhor ainda."
+  },
+  "Explorer": {
+    "eyebrow": "Um gostinho da cidade",
+    "title": "Todo bairro tem uma história.",
+    "description": "Clássicos de calçada, quintais arborizados e um lugar no balcão. Qual deles combina com você?",
+    "formLabel": "Encontrar lugares de demonstração",
+    "inputLabel": "Buscar lugares de demonstração",
+    "placeholder": "Busque por nome, bairro ou música ao vivo",
+    "search": "Buscar",
+    "neighborhoods": "Filtros de bairro",
+    "allNeighborhoods": "Todos os bairros",
+    "results": "{count, plural, one {# lugar de demonstração} other {# lugares de demonstração}}",
+    "clear": "Limpar filtros",
+    "places": "Lugares de demonstração",
+    "cardCaption": "Uma ideia do GeoBar",
+    "emptyTitle": "Nenhum lugar encontrado",
+    "emptyDescription": "Tente outro nome ou bairro, ou limpe os filtros.",
+    "disclaimer": "Uma prévia do GeoBar. Estes lugares fictícios demonstram a experiência; não são anúncios de bares reais."
+  },
+  "Places": {
+    "casa-da-esquina": {
+      "description": "Uma mesa na calçada, uma bebida gelada e uma conversa sem hora para acabar.",
+      "atmosphere": "Buteco clássico"
+    },
+    "quintal-do-sol": {
+      "description": "Um quintal ao ar livre para uma tarde tranquila que se estende até a noite.",
+      "atmosphere": "Mesas ao ar livre"
+    },
+    "balcao-da-prosa": {
+      "description": "Boa companhia no balcão, um pouco de música ao vivo e mais uma rodada.",
+      "atmosphere": "Música ao vivo"
+    }
+  },
+  "About": {
+    "eyebrow": "Mais que um lugar no mapa",
+    "titleFirst": "Mais perto do bairro.",
+    "titleSecond": "Muito mais",
+    "description": "Buteco é mais que um bar. É a esquina de sempre, a mesa que não para de crescer e a tarde que ninguém quer que acabe.",
+    "invitation": "O GeoBar é um convite para explorar Belo Horizonte pelos seus bairros e pelos lugares que aproximam as pessoas.",
+    "explore": "Explore a prévia"
+  },
+  "Footer": {
+    "description": "Feito com curiosidade. Inspirado em BH."
+  }
+}

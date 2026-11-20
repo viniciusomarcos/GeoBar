@@ -1,0 +1,79 @@
+{
+  "Metadata": {
+    "title": "GeoBar — Find your kind of buteco",
+    "description": "A new way to explore the bars and neighborhoods of Belo Horizonte. Find your kind of buteco with GeoBar."
+  },
+  "Navigation": {
+    "skip": "Skip to content",
+    "home": "GeoBar home",
+    "main": "Main navigation",
+    "about": "The idea",
+    "explore": "Explore GeoBar",
+    "language": "Language"
+  },
+  "Hero": {
+    "location": "Belo Horizonte, Minas Gerais",
+    "titleFirst": "Find your",
+    "titleSecond": "kind of",
+    "titleAccent": "buteco.",
+    "description": "The best part of BH is just around the corner. Discover a new favorite spot for a cold drink, a shared plate, and a good story.",
+    "explore": "Find your next spot",
+    "footnoteFirst": "Big city. Small tables.",
+    "footnoteSecond": "Endless good company.",
+    "photoAlt": "Warm pendant lights above a welcoming wooden bar counter",
+    "photoIntro": "Pull up a chair.",
+    "photoFirst": "There's always",
+    "photoSecond": "room for one more.",
+    "stamp": "Made for",
+    "noteTitle": "A city worth exploring",
+    "noteDescription": "One neighborhood at a time."
+  },
+  "Ribbon": {
+    "food": "Good food.",
+    "drinks": "Cold drinks.",
+    "company": "Even better company."
+  },
+  "Explorer": {
+    "eyebrow": "A little taste of the city",
+    "title": "Every neighborhood has a story.",
+    "description": "Sidewalk classics, leafy backyards, and a seat at the counter. What sounds like your kind of place?",
+    "formLabel": "Find demo places",
+    "inputLabel": "Search demo places",
+    "placeholder": "Try a name, neighborhood, or live music",
+    "search": "Search",
+    "neighborhoods": "Neighborhood filters",
+    "allNeighborhoods": "All neighborhoods",
+    "results": "{count, plural, one {# demo place} other {# demo places}}",
+    "clear": "Clear filters",
+    "places": "Demo places",
+    "cardCaption": "A GeoBar daydream",
+    "emptyTitle": "No places found",
+    "emptyDescription": "Try another name or neighborhood, or clear your filters.",
+    "disclaimer": "An early look at GeoBar. These fictional places preview the experience; they are not live bar listings."
+  },
+  "Places": {
+    "casa-da-esquina": {
+      "description": "A sidewalk table, something cold, and a conversation with no closing time.",
+      "atmosphere": "Classic buteco"
+    },
+    "quintal-do-sol": {
+      "description": "An open-air backyard made for a slow afternoon that turns into an evening.",
+      "atmosphere": "Outdoor seating"
+    },
+    "balcao-da-prosa": {
+      "description": "Good company at the counter, a little live music, and one more round.",
+      "atmosphere": "Live music"
+    }
+  },
+  "About": {
+    "eyebrow": "More than a place on the map",
+    "titleFirst": "A little more local.",
+    "titleSecond": "A lot more",
+    "description": "A buteco is more than a bar. It's the familiar corner, the table that keeps growing, and the afternoon nobody wants to end.",
+    "invitation": "GeoBar is an invitation to explore Belo Horizonte through its neighborhoods and the places that bring people together.",
+    "explore": "Explore the preview"
+  },
+  "Footer": {
+    "description": "Made with curiosity. Inspired by BH."
+  }
+}
