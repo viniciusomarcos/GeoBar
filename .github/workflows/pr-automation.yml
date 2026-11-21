@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, ready_for_review]
 
 permissions:
-  issues: write
+  pull-requests: write
 
 jobs:
   assign-author:
@@ -32,13 +32,17 @@ jobs:
             const author = pr.user.login
 
             try {
-              await github.rest.issues.addAssignees({
+              const { data } = await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
                 assignees: [author]
               })
+              if (!data.assignees.some((assignee) => assignee.login === author)) {
+                core.setFailed(`GitHub did not assign PR #${pr.number} to ${author}`)
+                return
+              }
               core.info(`Assigned PR #${pr.number} to ${author}`)
             } catch (error) {
-              core.warning(`Unable to assign PR author ${author}: ${error.message}`)
+              core.setFailed(`Unable to assign PR author ${author}: ${error.message}`)
             }
