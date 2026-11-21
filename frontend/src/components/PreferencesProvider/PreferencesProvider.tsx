@@ -36,34 +36,41 @@ export const PreferencesProvider = ({
   children: ReactNode
   initialLocale?: Locale
 }) => {
-  const [preferences, setPreferences] = useState<Preferences>({
+  const [preferences, setPreferences] = useState<Preferences | null>(null)
+  const currentPreferences = preferences ?? {
     locale: initialLocale,
     theme: 'light'
-  })
+  }
 
   useEffect(() => {
     const stored = readPreferences(initialLocale)
-    setPreferences(stored)
-    applyDocumentPreferences(stored)
+    setPreferences((current) => current ?? stored)
   }, [initialLocale])
 
-  const updatePreferences = (next: Preferences) => {
-    setPreferences(next)
-    applyDocumentPreferences(next)
-    savePreferences(next)
+  useEffect(() => {
+    if (!preferences) {
+      return
+    }
+    applyDocumentPreferences(preferences)
+    savePreferences(preferences)
+  }, [preferences])
+
+  const updatePreferences = (changes: Partial<Preferences>) => {
+    const stored = readPreferences(initialLocale)
+    setPreferences((current) => ({ ...(current ?? stored), ...changes }))
   }
 
   return (
     <PreferencesContext
       value={{
-        ...preferences,
-        setLocale: (locale) => updatePreferences({ ...preferences, locale }),
-        setTheme: (theme) => updatePreferences({ ...preferences, theme })
+        ...currentPreferences,
+        setLocale: (locale) => updatePreferences({ locale }),
+        setTheme: (theme) => updatePreferences({ theme })
       }}
     >
       <NextIntlClientProvider
-        locale={preferences.locale}
-        messages={getMessages(preferences.locale)}
+        locale={currentPreferences.locale}
+        messages={getMessages(currentPreferences.locale)}
         timeZone="America/Sao_Paulo"
       >
         {children}

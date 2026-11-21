@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useTranslations } from 'next-intl'
+import { useEffect, useRef } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
@@ -74,6 +75,68 @@ describe('PreferencesProvider', () => {
     expect(screen.getByText('en dark Language')).toBeVisible()
     expect(localStorage.getItem('geobar.locale')).toBe('en')
     expect(localStorage.getItem('geobar.theme')).toBe('dark')
+  })
+
+  it('preserves the saved theme when a child changes language before restoration finishes', () => {
+    localStorage.setItem('geobar.theme', 'dark')
+
+    const { result } = renderHook(
+      () => {
+        const preferences = usePreferences()
+        const initialSetLocale = useRef(preferences.setLocale)
+        useEffect(() => {
+          initialSetLocale.current('en')
+        }, [])
+        return preferences
+      },
+      { wrapper: PreferencesProvider }
+    )
+
+    expect(result.current.locale).toBe('en')
+    expect(result.current.theme).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(localStorage.getItem('geobar.theme')).toBe('dark')
+  })
+
+  it('keeps restored preferences when using actions captured on the first render', () => {
+    localStorage.setItem('geobar.theme', 'dark')
+
+    const { result } = renderHook(
+      () => {
+        const preferences = usePreferences()
+        const initialActions = useRef(preferences)
+        return { preferences, initialActions: initialActions.current }
+      },
+      { wrapper: PreferencesProvider }
+    )
+
+    act(() => result.current.initialActions.setLocale('en'))
+
+    expect(result.current.preferences.locale).toBe('en')
+    expect(result.current.preferences.theme).toBe('dark')
+
+    act(() => result.current.initialActions.setTheme('light'))
+
+    expect(result.current.preferences.locale).toBe('en')
+    expect(result.current.preferences.theme).toBe('light')
+    expect(localStorage.getItem('geobar.locale')).toBe('en')
+    expect(localStorage.getItem('geobar.theme')).toBe('light')
+  })
+
+  it('preserves both preferences when their updates are batched', () => {
+    const { result } = renderHook(usePreferences, {
+      wrapper: PreferencesProvider
+    })
+
+    act(() => {
+      result.current.setTheme('dark')
+      result.current.setLocale('en')
+    })
+
+    expect(result.current.theme).toBe('dark')
+    expect(result.current.locale).toBe('en')
+    expect(localStorage.getItem('geobar.theme')).toBe('dark')
+    expect(localStorage.getItem('geobar.locale')).toBe('en')
   })
 
   it('keeps controls usable when browser storage is blocked', async () => {
