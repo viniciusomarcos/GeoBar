@@ -15,14 +15,16 @@ GeoBar helps users discover bars in Belo Horizonte. Developed for Software
 Engineering II at UFMG, it is inspired by
 [this computational geometry project](https://github.com/amt-cc/tp1-geometria-computacional).
 
-The current frontend offers search and neighborhood filters using fictional
-demo places, with English (default) and Portuguese interfaces.
+The frontend offers bar search, neighborhood filters, an interactive map, and
+bar details using demo data, with Portuguese (default) and English interfaces.
+Language and light/dark theme preferences are saved in the browser.
 
 ## Technologies
 
 - Next.js, React, and TypeScript: application and interface.
 - Tailwind CSS and Lucide: styling and icons.
 - next-intl: English and Portuguese translations.
+- Leaflet and OpenStreetMap: interactive map and basemap.
 - pnpm and Biome: dependency management, linting, and formatting.
 - Vitest and React Testing Library: unit tests and coverage; Cypress: e2e tests.
 - GitHub Actions and Codecov: CI and coverage reporting.
@@ -42,7 +44,7 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
-Open <http://localhost:3000/en> or <http://localhost:3000/pt>.
+Open <http://localhost:3000>.
 For production, run `pnpm build` followed by `pnpm start:prod`.
 
 ## Running tests
