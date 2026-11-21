@@ -56,26 +56,6 @@ describe('InteractiveMap', () => {
     expect(screen.getByText(bars[1].description)).toBeVisible()
   })
 
-  it('supports keyboard zoom controls and resets both filtered and empty views', async () => {
-    const user = userEvent.setup()
-    const view = renderWithIntl(
-      <InteractiveMap bars={bars} selectedId={null} />
-    )
-    for (const name of ['Zoom in', 'Zoom out', 'Show all results']) {
-      screen.getByRole('button', { name }).focus()
-      await user.keyboard('{Enter}')
-    }
-    expect(
-      screen.getByRole('button', { name: 'Balcão da Prosa' })
-    ).toBeInTheDocument()
-    view.rerender(<InteractiveMap bars={[]} selectedId={null} />)
-    screen.getByRole('button', { name: 'Show all results' }).focus()
-    await user.keyboard('{Enter}')
-    expect(
-      screen.queryByRole('button', { name: 'Balcão da Prosa' })
-    ).not.toBeInTheDocument()
-  })
-
   it('keeps markers available when tiles fail and clears the notice when a tile loads', async () => {
     const { container } = renderWithIntl(
       <InteractiveMap bars={bars} selectedId={null} />

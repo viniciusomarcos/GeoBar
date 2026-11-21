@@ -62,4 +62,22 @@ describe('BarDetailsScreen', () => {
       expect(screen.getByText(place.hours)).toBeVisible()
     }
   })
+
+  it('keeps supplied bar details when the bar is absent from the demo catalog', () => {
+    const supplied = {
+      ...bar,
+      id: 'new-place',
+      name: 'New Place',
+      story: 'Details supplied independently of the demo catalog.'
+    }
+
+    renderWithIntl(<BarDetailsScreen bar={supplied} />, 'pt')
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: supplied.name })
+    ).toBeVisible()
+    expect(screen.getByText(supplied.story)).toBeVisible()
+    expect(screen.getByText(supplied.hours)).toBeVisible()
+    expect(document.title).toBe('New Place — GeoBar')
+  })
 })

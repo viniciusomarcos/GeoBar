@@ -1,3 +1,19 @@
+import en from '../../messages/en.json'
+import pt from '../../messages/pt.json'
+
+const expectMetadata = ({
+  title,
+  description
+}: {
+  title: string
+  description: string
+}) => {
+  cy.get('head title').should('have.length', 1).and('have.text', title)
+  cy.get('head meta[name="description"]')
+    .should('have.length', 1)
+    .and('have.attr', 'content', description)
+}
+
 const viewports = [
   { name: 'desktop', width: 1280, height: 800 },
   { name: 'mobile', width: 390, height: 844 }
@@ -56,15 +72,17 @@ for (const viewport of viewports) {
       cy.location('pathname').should('eq', '/')
       cy.get('html').should('have.attr', 'lang', 'en')
       cy.contains('h1', 'Find your kind of buteco.').should('be.visible')
-      cy.title().should('eq', 'GeoBar — Find your kind of buteco')
+      expectMetadata(en.Metadata)
       cy.reload()
       cy.contains('h1', 'Find your kind of buteco.').should('be.visible')
+      expectMetadata(en.Metadata)
       cy.window()
         .its('localStorage')
         .invoke('getItem', 'geobar.locale')
         .should('eq', 'en')
       cy.get('button[aria-label="Português"]').click()
       cy.contains('h1', 'Encontre seu próximo buteco.').should('be.visible')
+      expectMetadata(pt.Metadata)
     })
 
     it('saves dark mode independently of language and returns to light mode', () => {
@@ -249,4 +267,33 @@ describe('Missing bar', () => {
     cy.location('pathname').should('eq', '/')
     cy.get('article').should('have.length', 3)
   })
+})
+
+describe('Server-rendered metadata', () => {
+  const pages = [
+    { url: '/', ...pt.Metadata },
+    {
+      url: '/bars/casa-da-esquina',
+      title: 'Casa da Esquina — GeoBar',
+      description: pt.Places['casa-da-esquina'].description
+    }
+  ]
+
+  for (const page of pages) {
+    it(`includes unique localized metadata before hydration at ${page.url}`, () => {
+      cy.request(page.url).then(({ body }) => {
+        const pageDocument = new DOMParser().parseFromString(body, 'text/html')
+        expect(pageDocument.head.querySelectorAll('title')).to.have.length(1)
+        expect(pageDocument.title).to.eq(page.title)
+        expect(
+          pageDocument.head.querySelectorAll('meta[name="description"]')
+        ).to.have.length(1)
+        expect(
+          pageDocument.head
+            .querySelector('meta[name="description"]')
+            ?.getAttribute('content')
+        ).to.eq(page.description)
+      })
+    })
+  }
 })

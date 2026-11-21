@@ -3,15 +3,10 @@ import Script from 'next/script'
 import type { ReactNode } from 'react'
 import { PreferencesProvider } from '@/components/PreferencesProvider'
 import { defaultLocale } from '@/i18n/config'
-import { getMessages } from '@/i18n/messages'
 import 'leaflet/dist/leaflet.css'
 import './globals.css'
 
-const messages = getMessages(defaultLocale)
-
 export const metadata: Metadata = {
-  title: messages.Metadata.title,
-  description: messages.Metadata.description,
   applicationName: 'GeoBar'
 }
 

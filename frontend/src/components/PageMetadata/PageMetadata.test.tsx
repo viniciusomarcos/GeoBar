@@ -20,16 +20,26 @@ describe('PageMetadata', () => {
     )
 
     expect(document.title).toBe('Quintal do Sol — GeoBar')
+    expect(document.head.querySelectorAll('title')).toHaveLength(1)
   })
 
-  it('updates the server-rendered description meta tag', () => {
-    const description = document.createElement('meta')
-    description.name = 'description'
-    document.head.append(description)
+  it('keeps a single description tag as page data changes', () => {
+    const view = render(
+      <PageMetadata title="GeoBar" description="Explore Belo Horizonte" />
+    )
+    expect(
+      document.head.querySelector('meta[name="description"]')
+    ).toHaveAttribute('content', 'Explore Belo Horizonte')
 
-    render(<PageMetadata title="GeoBar" description="Explore Belo Horizonte" />)
+    view.rerender(
+      <PageMetadata title="GeoBar" description="Encontre seu próximo buteco" />
+    )
 
-    expect(description.content).toBe('Explore Belo Horizonte')
-    description.remove()
+    expect(
+      document.head.querySelectorAll('meta[name="description"]')
+    ).toHaveLength(1)
+    expect(
+      document.head.querySelector('meta[name="description"]')
+    ).toHaveAttribute('content', 'Encontre seu próximo buteco')
   })
 })

@@ -1,11 +1,11 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderWithIntl } from '@/test/render'
-import { NotFoundScreen } from './NotFoundScreen'
+import NotFound from './not-found'
 
-describe('NotFoundScreen', () => {
+describe('Not-found route', () => {
   it('explains a missing page and links back to the bar collection', () => {
-    renderWithIntl(<NotFoundScreen />, 'pt')
+    renderWithIntl(<NotFound />, 'pt')
 
     expect(
       screen.getByRole('heading', {

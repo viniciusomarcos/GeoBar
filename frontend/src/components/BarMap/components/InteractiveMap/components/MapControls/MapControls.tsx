@@ -1,25 +1,22 @@
 import { DomEvent, latLngBounds } from 'leaflet'
 import { LocateFixed, Minus, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef } from 'react'
 import { useMap } from 'react-leaflet'
 import { Pressable } from '@/components/Pressable'
 import type { BarMapProps } from '../../../../BarMap'
 import { cityCenter } from '../../mapConfig'
 
+const bindControls = (controls: HTMLDivElement | null) => {
+  if (!controls) {
+    return
+  }
+  DomEvent.disableClickPropagation(controls)
+  DomEvent.disableScrollPropagation(controls)
+}
+
 export const MapControls = ({ bars }: Pick<BarMapProps, 'bars'>) => {
   const map = useMap()
   const t = useTranslations('Map')
-  const container = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const controls = container.current
-    if (!controls) {
-      return
-    }
-    DomEvent.disableClickPropagation(controls)
-    DomEvent.disableScrollPropagation(controls)
-  }, [])
   const resetView = () => {
     if (bars.length === 0) {
       map.setView(cityCenter, 13)
@@ -32,7 +29,7 @@ export const MapControls = ({ bars }: Pick<BarMapProps, 'bars'>) => {
   }
 
   return (
-    <div className="map-controls" ref={container}>
+    <div className="map-controls" ref={bindControls}>
       <Pressable
         className="icon-button"
         aria-label={t('zoomIn')}
