@@ -5,7 +5,10 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  poweredByHeader: false
+  poweredByHeader: false,
+  redirects: async () => [
+    { source: '/:locale(en|pt)', destination: '/', permanent: true }
+  ]
 }
 
 export default withNextIntl(nextConfig)

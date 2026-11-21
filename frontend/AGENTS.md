@@ -12,6 +12,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Use English for code, comments, documentation, and commit messages.
 - Use pnpm. Start development with `pnpm start` from the repository root.
+- Default the interface to Portuguese and light mode. Save locale and theme in
+  localStorage and keep language preferences out of URLs.
 - Prefer arrow functions and early returns. Avoid `else` and `else if`.
 - Use camelCase for project-owned filenames and PascalCase for components.
   Preserve filenames required by tools, such as `pnpm-lock.yaml`.

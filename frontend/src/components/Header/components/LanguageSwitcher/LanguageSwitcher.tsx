@@ -1,23 +1,16 @@
-import { useLocale, useTranslations } from 'next-intl'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { usePreferences } from '@/components/PreferencesProvider'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
-import { type Locale, routing } from '@/i18n/routing'
+import { locales } from '@/i18n/config'
 
 const languageNames = { en: 'English', pt: 'Português' }
 
-const getCurrentPage = (
-  language: Locale,
-  locale: Locale
-): 'page' | undefined => {
-  if (language === locale) {
-    return 'page'
-  }
-
-  return undefined
-}
+const flags = { pt: '/images/flags/br.svg', en: '/images/flags/gb.svg' }
 
 export const LanguageSwitcher = () => {
-  const locale = useLocale()
+  const { locale, setLocale } = usePreferences()
   const t = useTranslations('Navigation')
 
   return (
@@ -25,16 +18,16 @@ export const LanguageSwitcher = () => {
       <Text as="legend" className="sr-only">
         {t('language')}
       </Text>
-      {routing.locales.map((language) => (
+      {locales.map((language) => (
         <Pressable
           key={language}
-          href={`/${language}`}
-          hrefLang={language}
+          onClick={() => setLocale(language)}
           lang={language}
           aria-label={languageNames[language]}
-          aria-current={getCurrentPage(language, locale)}
+          aria-pressed={language === locale}
+          title={languageNames[language]}
         >
-          {language.toUpperCase()}
+          <Image src={flags[language]} alt="" width={27} height={18} />
         </Pressable>
       ))}
     </fieldset>

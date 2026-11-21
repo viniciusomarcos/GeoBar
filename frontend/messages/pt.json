@@ -7,9 +7,22 @@
     "skip": "Pular para o conteúdo",
     "home": "Página inicial do GeoBar",
     "main": "Navegação principal",
-    "about": "A ideia",
-    "explore": "Explore o GeoBar",
     "language": "Idioma"
+  },
+  "Theme": {
+    "label": "Modo escuro",
+    "enableDark": "Ativar modo escuro",
+    "enableLight": "Ativar modo claro"
+  },
+  "Map": {
+    "label": "Mapa de bares em Belo Horizonte",
+    "title": "Se encontre em BH",
+    "hint": "Selecione um marcador para conhecer o bar.",
+    "loading": "Carregando o mapa…",
+    "unavailable": "Não foi possível carregar o fundo do mapa. Você ainda pode explorar os marcadores e a lista abaixo.",
+    "zoomIn": "Aproximar",
+    "zoomOut": "Afastar",
+    "reset": "Mostrar todos os resultados"
   },
   "Hero": {
     "location": "Belo Horizonte, Minas Gerais",
@@ -37,32 +50,54 @@
     "eyebrow": "Um gostinho da cidade",
     "title": "Todo bairro tem uma história.",
     "description": "Clássicos de calçada, quintais arborizados e um lugar no balcão. Qual deles combina com você?",
-    "formLabel": "Encontrar lugares de demonstração",
-    "inputLabel": "Buscar lugares de demonstração",
+    "formLabel": "Encontrar bares",
+    "inputLabel": "Buscar bares",
     "placeholder": "Busque por nome, bairro ou música ao vivo",
     "search": "Buscar",
     "neighborhoods": "Filtros de bairro",
     "allNeighborhoods": "Todos os bairros",
-    "results": "{count, plural, one {# lugar de demonstração} other {# lugares de demonstração}}",
+    "results": "{count, plural, one {# bar} other {# bares}}",
     "clear": "Limpar filtros",
-    "places": "Lugares de demonstração",
-    "cardCaption": "Uma ideia do GeoBar",
+    "places": "Bares",
+    "viewOnMap": "Ver no mapa",
     "emptyTitle": "Nenhum lugar encontrado",
     "emptyDescription": "Tente outro nome ou bairro, ou limpe os filtros.",
-    "disclaimer": "Uma prévia do GeoBar. Estes lugares fictícios demonstram a experiência; não são anúncios de bares reais."
+    "disclaimer": "Dados de demonstração.",
+    "viewDetails": "Ver detalhes"
   },
   "Places": {
     "casa-da-esquina": {
       "description": "Uma mesa na calçada, uma bebida gelada e uma conversa sem hora para acabar.",
-      "atmosphere": "Buteco clássico"
+      "atmosphere": "Buteco clássico",
+      "story": "Um buteco de bairro para sentar sem pressa e deixar a conversa acontecer. Na calçada, as mesas se juntam ao longo da noite; no balcão, os petiscos chegam para compartilhar.",
+      "highlights": [
+        "Mesas na calçada",
+        "Petiscos para compartilhar",
+        "Cerveja gelada"
+      ],
+      "hours": "Terça a domingo, das 17h à meia-noite."
     },
     "quintal-do-sol": {
       "description": "Um quintal ao ar livre para uma tarde tranquila que se estende até a noite.",
-      "atmosphere": "Mesas ao ar livre"
+      "atmosphere": "Mesas ao ar livre",
+      "story": "Um quintal arborizado no meio da Savassi, com espaço para aproveitar a tarde e esticar o encontro até a noite. A proposta é simples: comida para dividir, um lugar ao ar livre e boa companhia.",
+      "highlights": [
+        "Quintal arborizado",
+        "Mesas ao ar livre",
+        "Opções vegetarianas"
+      ],
+      "hours": "Quarta a domingo, das 12h às 23h."
     },
     "balcao-da-prosa": {
       "description": "Boa companhia no balcão, um pouco de música ao vivo e mais uma rodada.",
-      "atmosphere": "Música ao vivo"
+      "atmosphere": "Música ao vivo",
+      "story": "Um balcão acolhedor na Floresta para ouvir música e descobrir uma nova conversa. A programação de música ao vivo combina com porções para dividir e encontros em grupos pequenos.",
+      "highlights": [
+        "Música ao vivo",
+        "Porções para dividir",
+        "Ambiente intimista"
+      ],
+      "hours": "Quinta a domingo, das 18h à 1h."
     }
   },
   "About": {
@@ -71,9 +106,25 @@
     "titleSecond": "Muito mais",
     "description": "Buteco é mais que um bar. É a esquina de sempre, a mesa que não para de crescer e a tarde que ninguém quer que acabe.",
     "invitation": "O GeoBar é um convite para explorar Belo Horizonte pelos seus bairros e pelos lugares que aproximam as pessoas.",
-    "explore": "Explore a prévia"
+    "explore": "Explorar bares"
   },
   "Footer": {
     "description": "Feito com curiosidade. Inspirado em BH."
+  },
+  "Details": {
+    "pageTitle": "{name} — GeoBar",
+    "back": "Voltar para os bares",
+    "about": "Sobre o bar",
+    "information": "Informações do bar",
+    "highlights": "O que você encontra",
+    "hours": "Horários",
+    "neighborhood": "Bairro",
+    "disclaimer": "Dados de demonstração."
+  },
+  "NotFound": {
+    "pageTitle": "Página não encontrada — GeoBar",
+    "title": "Esse lugar ficou fora do mapa.",
+    "description": "Não encontramos a página que você procura. Volte para o mapa e descubra outro lugar em BH.",
+    "back": "Explorar bares"
   }
 }
