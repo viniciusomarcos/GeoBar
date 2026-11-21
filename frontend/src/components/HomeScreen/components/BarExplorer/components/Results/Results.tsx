@@ -4,9 +4,12 @@ import type { DemoBar } from '@/data/demoBars'
 import { EmptyState } from './components/EmptyState'
 import { PlaceCard } from './components/PlaceCard'
 
-type ResultsProps = { bars: ReadonlyArray<DemoBar> }
+type ResultsProps = {
+  bars: ReadonlyArray<DemoBar>
+  onSelect: (id: string) => void
+}
 
-export const Results = ({ bars }: ResultsProps) => {
+export const Results = ({ bars, onSelect }: ResultsProps) => {
   const t = useTranslations('Explorer')
 
   return (
@@ -14,7 +17,7 @@ export const Results = ({ bars }: ResultsProps) => {
       <ul aria-label={t('places')} className="mt-4 grid gap-5 md:grid-cols-3">
         {bars.map((bar) => (
           <li key={bar.id}>
-            <PlaceCard bar={bar} />
+            <PlaceCard bar={bar} onSelect={() => onSelect(bar.id)} />
           </li>
         ))}
       </ul>

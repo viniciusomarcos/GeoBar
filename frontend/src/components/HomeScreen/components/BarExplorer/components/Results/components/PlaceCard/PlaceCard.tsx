@@ -1,11 +1,18 @@
 import { Beer, MapPin, Music2, TreePine } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
 import type { DemoBar } from '@/data/demoBars'
 
 const illustrations = { beer: Beer, garden: TreePine, music: Music2 }
 
-export const PlaceCard = ({ bar }: { bar: DemoBar }) => {
+export const PlaceCard = ({
+  bar,
+  onSelect
+}: {
+  bar: DemoBar
+  onSelect: () => void
+}) => {
   const t = useTranslations('Explorer')
   const Illustration = illustrations[bar.illustration]
 
@@ -20,9 +27,6 @@ export const PlaceCard = ({ bar }: { bar: DemoBar }) => {
           className="place-illustration"
           strokeWidth={1.1}
         />
-        <Text as="span" className="place-art-caption">
-          {t('cardCaption')}
-        </Text>
       </div>
       <div className="p-6">
         <Text className="flex items-center gap-1.5 text-sm text-muted">
@@ -30,11 +34,26 @@ export const PlaceCard = ({ bar }: { bar: DemoBar }) => {
           {bar.neighborhood}
         </Text>
         <Text as="h3" className="mt-3 text-2xl font-semibold tracking-tight">
-          {bar.name}
+          <Pressable href={`/bars/${bar.id}`} className="place-title-link">
+            {bar.name}
+          </Pressable>
         </Text>
         <Text className="mt-3 text-base leading-7 text-muted">
           {bar.description}
         </Text>
+        <div className="place-actions">
+          <Pressable href={`/bars/${bar.id}`} className="details-link">
+            {t('viewDetails')}
+          </Pressable>
+          <Pressable
+            href="#bar-map"
+            onClick={onSelect}
+            className="view-map-button"
+          >
+            <MapPin aria-hidden="true" className="size-4" />
+            {t('viewOnMap')}
+          </Pressable>
+        </div>
       </div>
     </article>
   )

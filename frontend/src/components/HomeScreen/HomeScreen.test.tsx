@@ -27,7 +27,7 @@ describe('HomeScreen', () => {
     ).toBeVisible()
   })
 
-  it('renders the Portuguese page and keeps home links in the active locale', () => {
+  it('renders the Portuguese page and keeps home links at the root', () => {
     render(<HomeScreen />, 'pt')
 
     expect(
@@ -42,7 +42,7 @@ describe('HomeScreen', () => {
     for (const link of screen.getAllByRole('link', {
       name: 'Página inicial do GeoBar'
     })) {
-      expect(link).toHaveAttribute('href', '/pt')
+      expect(link).toHaveAttribute('href', '/')
     }
     expect(
       screen.getByRole('img', { name: /luminárias aconchegantes/i })

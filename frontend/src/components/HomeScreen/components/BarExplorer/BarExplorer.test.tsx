@@ -9,25 +9,21 @@ describe('BarExplorer', () => {
     const user = userEvent.setup()
     render(<BarExplorer />, 'pt')
 
-    expect(screen.getByRole('status')).toHaveTextContent(
-      '3 lugares de demonstração'
-    )
-    expect(screen.getByText(/estes lugares fictícios/i)).toBeVisible()
+    expect(screen.getByRole('status')).toHaveTextContent('3 bares')
+    expect(screen.getByText(/dados de demonstração/i)).toBeVisible()
     expect(
       screen.getByRole('group', { name: 'Filtros de bairro' })
     ).toBeVisible()
 
     await user.type(
-      screen.getByRole('searchbox', { name: 'Buscar lugares de demonstração' }),
+      screen.getByRole('searchbox', { name: 'Buscar bares' }),
       'musica ao vivo{Enter}'
     )
 
     expect(
       screen.getByRole('heading', { name: 'Balcão da Prosa' })
     ).toBeVisible()
-    expect(screen.getByRole('status')).toHaveTextContent(
-      '1 lugar de demonstração'
-    )
+    expect(screen.getByRole('status')).toHaveTextContent('1 bar')
     expect(screen.getByRole('button', { name: 'Limpar filtros' })).toBeVisible()
   })
 
@@ -35,11 +31,11 @@ describe('BarExplorer', () => {
     render(<BarExplorer />)
 
     expect(screen.getAllByRole('article')).toHaveLength(3)
-    expect(screen.getByRole('status')).toHaveTextContent('3 demo places')
+    expect(screen.getByRole('status')).toHaveTextContent('3 bars')
     expect(
       screen.getByRole('button', { name: 'All neighborhoods' })
     ).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByText(/these fictional places/i)).toBeVisible()
+    expect(screen.getByText(/demo data/i)).toBeVisible()
     expect(
       screen.queryByRole('button', { name: 'Clear filters' })
     ).not.toBeInTheDocument()
@@ -57,7 +53,7 @@ describe('BarExplorer', () => {
       screen.getByRole('heading', { name: 'Quintal do Sol' })
     ).toBeVisible()
     expect(screen.getAllByRole('article')).toHaveLength(1)
-    expect(screen.getByRole('status')).toHaveTextContent('1 demo place')
+    expect(screen.getByRole('status')).toHaveTextContent('1 bar')
   })
 
   it('supports keyboard submission and accent-insensitive searches', async () => {
@@ -98,7 +94,7 @@ describe('BarExplorer', () => {
     expect(
       screen.getByRole('heading', { name: 'No places found' })
     ).toBeVisible()
-    expect(screen.getByRole('status')).toHaveTextContent('0 demo places')
+    expect(screen.getByRole('status')).toHaveTextContent('0 bars')
     expect(screen.queryByRole('article')).not.toBeInTheDocument()
   })
 

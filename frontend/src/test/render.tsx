@@ -1,17 +1,11 @@
 import { render } from '@testing-library/react'
-import { NextIntlClientProvider } from 'next-intl'
-import type { ReactElement } from 'react'
-import { getMessages } from '@/i18n/messages'
-import type { Locale } from '@/i18n/routing'
+import type { ReactElement, ReactNode } from 'react'
+import { PreferencesProvider } from '@/components/PreferencesProvider'
+import type { Locale } from '@/i18n/config'
 
 export const renderWithIntl = (ui: ReactElement, locale: Locale = 'en') => {
-  return render(
-    <NextIntlClientProvider
-      locale={locale}
-      messages={getMessages(locale)}
-      timeZone="America/Sao_Paulo"
-    >
-      {ui}
-    </NextIntlClientProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <PreferencesProvider initialLocale={locale}>{children}</PreferencesProvider>
   )
+  return render(ui, { wrapper })
 }
