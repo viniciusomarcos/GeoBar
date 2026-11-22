@@ -1,5 +1,6 @@
 import en from '../../messages/en.json'
 import pt from '../../messages/pt.json'
+import { stubMapTiles } from '../support/mapTiles'
 
 const expectMetadata = ({
   title,
@@ -19,17 +20,7 @@ const viewports = [
   { name: 'mobile', width: 390, height: 844 }
 ]
 
-// Test tiles keep browser tests independent of the public OSM tile service.
-const tile =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#e5ebdf"/><path d="M0 70h256M0 185h256M80 0v256M195 0v256" stroke="#fff" stroke-width="12"/><path d="M0 70h256M0 185h256M80 0v256M195 0v256" stroke="#d3dacf" stroke-width="1"/></svg>'
-
-beforeEach(() => {
-  cy.intercept('GET', 'https://tile.openstreetmap.org/**', {
-    statusCode: 200,
-    headers: { 'content-type': 'image/svg+xml' },
-    body: tile
-  })
-})
+beforeEach(stubMapTiles)
 
 for (const viewport of viewports) {
   describe(`Home page (${viewport.name})`, () => {
@@ -143,6 +134,75 @@ for (const viewport of viewports) {
         .and('have.attr', 'title', 'Quintal do Sol')
     })
 
+    it('removes only the neighborhood restriction when all neighborhoods is selected', () => {
+      cy.get('input[type="search"]').type('Quintal{enter}')
+      cy.contains('button', 'Floresta').click()
+      cy.get('article').should('not.exist')
+      cy.get('.bar-map .map-marker').should('not.exist')
+
+      cy.contains('button', 'Todos os bairros').click()
+
+      cy.get('input[type="search"]').should('have.value', 'Quintal')
+      cy.get('article').should('have.length', 1)
+      cy.contains('h3', 'Quintal do Sol').should('be.visible')
+      cy.contains('button', 'Todos os bairros').should(
+        'have.attr',
+        'aria-pressed',
+        'true'
+      )
+      cy.get('.bar-map .map-marker')
+        .should('have.length', 1)
+        .and('have.attr', 'title', 'Quintal do Sol')
+    })
+
+    it('clears a search with whitespace while keeping the neighborhood selected', () => {
+      cy.contains('button', 'Savassi').click()
+      cy.get('input[type="search"]').type('Casa{enter}')
+      cy.get('article').should('not.exist')
+
+      cy.get('input[type="search"]').clear().type('   {enter}')
+
+      cy.get('article').should('have.length', 1)
+      cy.contains('h3', 'Quintal do Sol').should('be.visible')
+      cy.contains('button', 'Savassi').should(
+        'have.attr',
+        'aria-pressed',
+        'true'
+      )
+      cy.get('.bar-map .map-marker')
+        .should('have.length', 1)
+        .and('have.attr', 'title', 'Quintal do Sol')
+      cy.contains('button', 'Todos os bairros').click()
+      cy.get('article').should('have.length', 3)
+      cy.get('.bar-map .map-marker').should('have.length', 3)
+      cy.contains('button', 'Limpar filtros').should('not.exist')
+    })
+
+    it('keeps active filters and translates the selected result when changing language', () => {
+      cy.get('input[type="search"]').type('balcao{enter}')
+      cy.contains('button', 'Floresta').click()
+      cy.get('article').should('have.length', 1)
+
+      cy.get('button[aria-label="English"]').click()
+
+      cy.get('input[type="search"]').should('have.value', 'balcao')
+      cy.contains('button', 'Floresta').should(
+        'have.attr',
+        'aria-pressed',
+        'true'
+      )
+      cy.get('article')
+        .should('have.length', 1)
+        .and('contain.text', 'Balcão da Prosa')
+        .and('contain.text', 'Live music')
+      cy.get('.bar-map .map-marker')
+        .should('have.length', 1)
+        .and('have.attr', 'title', 'Balcão da Prosa')
+      cy.contains('a', 'View on map').click()
+      cy.get('.leaflet-popup').should('contain.text', 'Live music')
+      cy.location('pathname').should('eq', '/')
+    })
+
     it('clears an empty combined search and restores places and markers', () => {
       cy.get('input[type="search"]').type('Quintal{enter}')
       cy.contains('button', 'Floresta').click()
@@ -221,6 +281,25 @@ for (const viewport of viewports) {
       cy.get('.bar-map .map-marker').should('have.length', 1)
     })
 
+    it('opens bar details from a focused map marker using the keyboard', () => {
+      cy.get('.bar-map').scrollIntoView()
+      cy.get('.bar-map .map-marker[title="Balcão da Prosa"]')
+        .focus()
+        .should('have.focus')
+      // Leaflet listens for keypress; cy.press only sends keydown and keyup.
+      cy.focused().type('{enter}')
+      cy.get('.leaflet-popup')
+        .should('be.visible')
+        .contains('a', 'Ver detalhes')
+        .focus()
+        .should('have.focus')
+
+      cy.press(Cypress.Keyboard.Keys.ENTER)
+
+      cy.location('pathname').should('eq', '/bars/balcao-da-prosa')
+      cy.contains('h1', 'Balcão da Prosa').should('be.visible')
+    })
+
     it('lets keyboard users skip navigation and reach the main content', () => {
       cy.press(Cypress.Keyboard.Keys.TAB)
       cy.get('a[href="#main-content"]').should('have.focus')
@@ -261,6 +340,11 @@ describe('Root route and map availability', () => {
     )
     cy.get('.bar-map .map-marker').should('have.length', 3)
     cy.get('article').should('have.length', 3)
+    cy.get('.bar-map .map-marker[title="Casa da Esquina"]').click()
+    cy.get('.leaflet-popup').contains('a', 'Ver detalhes').click()
+    cy.location('pathname').should('eq', '/bars/casa-da-esquina')
+    cy.contains('h1', 'Casa da Esquina').should('be.visible')
+    cy.get('.bar-map .map-marker').should('have.length', 1)
   })
 })
 

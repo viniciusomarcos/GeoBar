@@ -84,6 +84,62 @@ describe('BarExplorer', () => {
     )
   })
 
+  it('restores every neighborhood without discarding the submitted search', async () => {
+    const user = userEvent.setup()
+    render(<BarExplorer />)
+    await user.type(screen.getByRole('searchbox'), 'Quintal{Enter}')
+    await user.click(screen.getByRole('button', { name: 'Floresta' }))
+
+    await user.click(screen.getByRole('button', { name: 'All neighborhoods' }))
+
+    expect(screen.getByRole('searchbox')).toHaveValue('Quintal')
+    expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(
+      screen.getByRole('heading', { name: 'Quintal do Sol' })
+    ).toBeVisible()
+    expect(
+      screen.getByRole('button', { name: 'All neighborhoods' })
+    ).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Floresta' })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    )
+  })
+
+  it('removes a submitted search with whitespace while preserving the neighborhood', async () => {
+    const user = userEvent.setup()
+    render(<BarExplorer />)
+    await user.click(screen.getByRole('button', { name: 'Savassi' }))
+    await user.type(screen.getByRole('searchbox'), 'Casa{Enter}')
+    expect(screen.queryByRole('article')).not.toBeInTheDocument()
+
+    await user.clear(screen.getByRole('searchbox'))
+    await user.type(screen.getByRole('searchbox'), '   {Enter}')
+
+    expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(
+      screen.getByRole('heading', { name: 'Quintal do Sol' })
+    ).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Savassi' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+  })
+
+  it('combines a matching name and neighborhood without including other bars', async () => {
+    const user = userEvent.setup()
+    render(<BarExplorer />)
+
+    await user.type(screen.getByRole('searchbox'), 'balcao{Enter}')
+    await user.click(screen.getByRole('button', { name: 'Floresta' }))
+
+    expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(
+      screen.getByRole('heading', { name: 'Balcão da Prosa' })
+    ).toBeVisible()
+    expect(screen.getByRole('status')).toHaveTextContent('1 bar')
+  })
+
   it('explains an empty result when the combined filters do not match', async () => {
     const user = userEvent.setup()
     render(<BarExplorer />)
