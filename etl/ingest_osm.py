@@ -15,9 +15,11 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import os
 import re
 import unicodedata
+from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
@@ -165,6 +167,100 @@ def fetch_osm_bars(timeout: int = 60) -> list[dict[str, Any]]:
     return parse_osm_elements(payload.get("elements", []))
 
 
+def haversine_meters(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calcula a distância geodésica aproximada em metros entre duas coordenadas."""
+    earth_radius_m = 6_371_000.0
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = (
+        math.sin(delta_phi / 2) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
+    )
+    return 2 * earth_radius_m * math.asin(math.sqrt(a))
+
+
+def text_similarity(first: str, second: str) -> float:
+    """Compara dois textos normalizados retornando similaridade entre 0.0 e 1.0."""
+    return SequenceMatcher(None, slugify(first), slugify(second)).ratio()
+
+
+def is_duplicate_bar(
+    existing: dict[str, Any],
+    candidate: dict[str, Any],
+    max_distance_meters: float = 50.0,
+    min_name_similarity: float = 0.80,
+    min_address_similarity: float = 0.80,
+) -> bool:
+    """Identifica se dois bares representam o mesmo estabelecimento.
+
+    Prioridade dos critérios:
+    1. Nome normalizado (obrigatório ter similaridade >= min_name_similarity).
+    2. Endereço normalizado quando ambos possuem endereço preenchido (prioritário sobre
+       distância para evitar falsos positivos em ruas diferentes ou falsos negativos por
+       pequenos desvios de geocodificação).
+    3. Distância geográfica (fallback quando um dos registros não possui endereço).
+    """
+    if text_similarity(existing["name"], candidate["name"]) < min_name_similarity:
+        return False
+
+    existing_address = (existing.get("address") or "").strip()
+    candidate_address = (candidate.get("address") or "").strip()
+    if existing_address and candidate_address:
+        return text_similarity(existing_address, candidate_address) >= min_address_similarity
+
+    distance = haversine_meters(
+        existing["latitude"],
+        existing["longitude"],
+        candidate["latitude"],
+        candidate["longitude"],
+    )
+    return distance <= max_distance_meters
+
+
+def deduplicate_bars(
+    records: list[dict[str, Any]],
+    max_distance_meters: float = 50.0,
+    min_name_similarity: float = 0.80,
+    min_address_similarity: float = 0.80,
+) -> list[dict[str, Any]]:
+    """Remove duplicatas preservando a ordem de prioridade e enriquecendo campos ausentes."""
+    deduplicated: list[dict[str, Any]] = []
+
+    for candidate in records:
+        matched: dict[str, Any] | None = None
+        for existing in deduplicated:
+            if is_duplicate_bar(
+                existing,
+                candidate,
+                max_distance_meters=max_distance_meters,
+                min_name_similarity=min_name_similarity,
+                min_address_similarity=min_address_similarity,
+            ):
+                matched = existing
+                break
+
+        if matched is None:
+            deduplicated.append({**candidate, "metadata": dict(candidate.get("metadata") or {})})
+            continue
+
+        if not matched.get("address") and candidate.get("address"):
+            matched["address"] = candidate["address"]
+        if not matched.get("neighborhood") and candidate.get("neighborhood"):
+            matched["neighborhood"] = candidate["neighborhood"]
+
+        merged_metadata = dict(matched.get("metadata") or {})
+        for key, value in (candidate.get("metadata") or {}).items():
+            merged_metadata.setdefault(key, value)
+        if candidate.get("external_id") and candidate["external_id"] != matched.get("external_id"):
+            merged_metadata.setdefault("merged_external_id", candidate["external_id"])
+        matched["metadata"] = merged_metadata
+
+    return deduplicated
+
+
 def upsert_bars(records: list[dict[str, Any]], database_url: str) -> int:
     """Insere ou atualiza bares no PostgreSQL/PostGIS de forma idempotente."""
     if not records:
@@ -248,6 +344,12 @@ def main() -> None:
         osm_records = fetch_osm_bars()
         print(f"[ETL] OpenStreetMap (Overpass): {len(osm_records)} bares carregados.")
         records.extend(osm_records)
+
+    raw_count = len(records)
+    records = deduplicate_bars(records)
+    merged_count = raw_count - len(records)
+    if merged_count > 0:
+        print(f"[ETL] Deduplicação: {merged_count} registros duplicados mesclados.")
 
     if args.dry_run:
         print(f"[ETL] Dry-run ativo. Total preparado: {len(records)} registros.")
