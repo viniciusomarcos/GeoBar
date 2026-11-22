@@ -7,8 +7,10 @@ import pytest
 import requests
 
 from etl.ingest_osm import (
+    deduplicate_bars,
     extract_neighborhood_from_address,
     fetch_osm_bars,
+    haversine_meters,
     load_legacy_csv,
     main,
     parse_osm_elements,
@@ -157,6 +159,165 @@ def test_fetch_osm_bars_propagates_http_errors(monkeypatch: pytest.MonkeyPatch) 
 
     with pytest.raises(requests.HTTPError):
         fetch_osm_bars()
+
+
+def test_haversine_meters_returns_zero_for_same_point() -> None:
+    assert haversine_meters(-19.9321, -43.9385, -19.9321, -43.9385) == 0.0
+
+
+def test_haversine_meters_calculates_known_distance_in_bh() -> None:
+    # Praça da Liberdade até Praça da Savassi (~750m a 850m em linha reta)
+    distance = haversine_meters(-19.9320, -43.9380, -19.9390, -43.9360)
+    assert 750 <= distance <= 850
+
+
+def test_deduplicate_bars_prioritizes_name_and_address_over_distance() -> None:
+    records = [
+        {
+            "external_id": "legacy:baiuca",
+            "name": "Baiúca",
+            "address": "Rua Piauí, 1884, Funcionários",
+            "neighborhood": None,
+            "category": "buteco",
+            "source": "legacy_csv",
+            "metadata": {"dataset": "comida_di_buteco_2026"},
+            "latitude": -19.93585,
+            "longitude": -43.92798,
+        },
+        {
+            "external_id": "osm:node/999",
+            "name": "Baiuca",
+            "address": "Rua Piaui, 1884, Funcionarios",
+            "neighborhood": "Funcionários",
+            "category": "bar",
+            "source": "osm",
+            "metadata": {"phone": "+55 31 3222-1111"},
+            # Mesmo com desvio de geocodificação > 50m, nome + endereço confirmam duplicata
+            "latitude": -19.93680,
+            "longitude": -43.92798,
+        },
+    ]
+
+    result = deduplicate_bars(records)
+
+    assert len(result) == 1
+    assert result[0]["external_id"] == "legacy:baiuca"
+    assert result[0]["neighborhood"] == "Funcionários"
+    assert result[0]["metadata"] == {
+        "dataset": "comida_di_buteco_2026",
+        "phone": "+55 31 3222-1111",
+        "merged_external_id": "osm:node/999",
+    }
+
+
+def test_deduplicate_bars_keeps_nearby_bars_when_addresses_differ() -> None:
+    records = [
+        {
+            "external_id": "legacy:bar-central",
+            "name": "Bar Central",
+            "address": "Rua Pernambuco, 100, Savassi",
+            "neighborhood": "Savassi",
+            "category": "buteco",
+            "source": "legacy_csv",
+            "metadata": {},
+            "latitude": -19.93900,
+            "longitude": -43.93600,
+        },
+        {
+            "external_id": "osm:node/555",
+            "name": "Bar Central",
+            "address": "Avenida Getúlio Vargas, 850, Savassi",
+            "neighborhood": "Savassi",
+            "category": "bar",
+            "source": "osm",
+            "metadata": {},
+            # Muito próximos (< 20m), mas endereços distintos diferenciam os bares
+            "latitude": -19.93905,
+            "longitude": -43.93605,
+        },
+    ]
+
+    result = deduplicate_bars(records)
+    assert len(result) == 2
+
+
+def test_deduplicate_bars_uses_distance_fallback_when_address_is_missing() -> None:
+    records = [
+        {
+            "external_id": "legacy:bar-do-nelson",
+            "name": "Bar do Nelson",
+            "address": "Rua Vicente Risola, 1000, Santa Inês",
+            "neighborhood": "Santa Inês",
+            "category": "buteco",
+            "source": "legacy_csv",
+            "metadata": {"dataset": "comida_di_buteco_2026"},
+            "latitude": -19.89000,
+            "longitude": -43.90862,
+        },
+        {
+            "external_id": "osm:node/321",
+            "name": "Bar do Nelson",
+            "address": None,
+            "neighborhood": None,
+            "category": "bar",
+            "source": "osm",
+            "metadata": {"opening_hours": "Tu-Su 17:00-23:00"},
+            "latitude": -19.89010,
+            "longitude": -43.90865,
+        },
+        {
+            "external_id": "osm:node/322",
+            "name": "Bar do Nelson",
+            "address": None,
+            "neighborhood": None,
+            "category": "bar",
+            "source": "osm",
+            "metadata": {},
+            # Mesmo nome, sem endereço, mas a ~1 km de distância -> mantém separado
+            "latitude": -19.90000,
+            "longitude": -43.90862,
+        },
+    ]
+
+    result = deduplicate_bars(records)
+
+    assert len(result) == 2
+    assert result[0]["metadata"]["opening_hours"] == "Tu-Su 17:00-23:00"
+    assert result[0]["metadata"]["merged_external_id"] == "osm:node/321"
+    assert result[1]["external_id"] == "osm:node/322"
+
+
+def test_deduplicate_bars_keeps_different_names_at_same_location() -> None:
+    records = [
+        {
+            "external_id": "legacy:bar-alfa",
+            "name": "Bar Alfa",
+            "address": "Rua Paraíba, 500, Savassi",
+            "neighborhood": "Savassi",
+            "category": "buteco",
+            "source": "legacy_csv",
+            "metadata": {},
+            "latitude": -19.9321,
+            "longitude": -43.9385,
+        },
+        {
+            "external_id": "osm:node/888",
+            "name": "Pub Ômega",
+            "address": "Rua Paraíba, 500, Savassi",
+            "neighborhood": "Savassi",
+            "category": "pub",
+            "source": "osm",
+            "metadata": {},
+            "latitude": -19.9321,
+            "longitude": -43.9385,
+        },
+    ]
+
+    assert len(deduplicate_bars(records)) == 2
+
+
+def test_deduplicate_bars_handles_empty_list() -> None:
+    assert deduplicate_bars([]) == []
 
 
 def test_upsert_bars_returns_zero_for_empty_list(monkeypatch: pytest.MonkeyPatch) -> None:
