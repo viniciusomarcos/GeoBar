@@ -56,6 +56,38 @@ describe('InteractiveMap', () => {
     expect(screen.getByText(bars[1].description)).toBeVisible()
   })
 
+  it('opens a focused marker with the keyboard and exposes its details link', () => {
+    renderWithIntl(<InteractiveMap bars={bars} selectedId={null} />)
+    const marker = screen.getByRole('button', { name: 'Balcão da Prosa' })
+    marker.focus()
+
+    // Leaflet reads keyCode, which jsdom does not populate automatically.
+    fireEvent.keyPress(marker, { key: 'Enter', code: 'Enter', keyCode: 13 })
+
+    expect(screen.getByText(bars[2].description)).toBeVisible()
+    expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
+      'href',
+      '/bars/balcao-da-prosa'
+    )
+  })
+
+  it('closes a selected popup when filtering removes that bar', () => {
+    const view = renderWithIntl(
+      <InteractiveMap bars={bars} selectedId={bars[1].id} />
+    )
+    expect(screen.getByText(bars[1].description)).toBeVisible()
+
+    view.rerender(<InteractiveMap bars={[bars[0]]} selectedId={bars[1].id} />)
+
+    expect(screen.queryByText(bars[1].description)).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('link', { name: 'View details' })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Casa da Esquina' })
+    ).toBeInTheDocument()
+  })
+
   it('keeps markers available when tiles fail and clears the notice when a tile loads', async () => {
     const { container } = renderWithIntl(
       <InteractiveMap bars={bars} selectedId={null} />
