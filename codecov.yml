@@ -9,14 +9,23 @@ coverage:
       frontend:
         target: 80%
         flags: [frontend]
+      etl:
+        target: 80%
+        flags: [etl]
     patch:
       frontend:
         target: 80%
         flags: [frontend]
+      etl:
+        target: 80%
+        flags: [etl]
 
 flags:
   frontend:
     paths: [frontend/src/]
+    carryforward: false
+  etl:
+    paths: [etl/]
     carryforward: false
 
 comment:
