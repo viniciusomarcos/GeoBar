@@ -16,6 +16,7 @@ describe('BarDetailsScreen', () => {
     ).toBeVisible()
     expect(screen.getByText(bar.story)).toBeVisible()
     expect(screen.getByText(bar.hours)).toBeVisible()
+    expect(screen.queryByText('Demo data.')).not.toBeInTheDocument()
     for (const highlight of bar.highlights) {
       expect(screen.getByText(highlight)).toBeVisible()
     }
@@ -32,6 +33,7 @@ describe('BarDetailsScreen', () => {
     renderWithIntl(<BarDetailsScreen bar={bar} />, 'pt')
 
     expect(screen.getByRole('heading', { name: 'Sobre o bar' })).toBeVisible()
+    expect(screen.queryByText('Dados de demonstração.')).not.toBeInTheDocument()
     expect(screen.getByText(getDemoBars('pt')[0].story)).toBeVisible()
     expect(
       screen.getByRole('complementary', { name: 'Informações do bar' })

@@ -56,14 +56,24 @@
     "search": "Buscar",
     "neighborhoods": "Filtros de bairro",
     "allNeighborhoods": "Todos os bairros",
-    "results": "{count, plural, one {# bar} other {# bares}}",
+    "results": "{count, plural, =0 {0 bares} one {# bar} other {# bares}}",
     "clear": "Limpar filtros",
     "places": "Bares",
     "viewOnMap": "Ver no mapa",
     "emptyTitle": "Nenhum lugar encontrado",
     "emptyDescription": "Tente outro nome ou bairro, ou limpe os filtros.",
-    "disclaimer": "Dados de demonstração.",
-    "viewDetails": "Ver detalhes"
+    "viewDetails": "Ver detalhes",
+    "loading": "Carregando bares…",
+    "errorTitle": "Não foi possível carregar os bares",
+    "errorDescription": "Confira sua conexão e tente novamente. Sua busca está salva.",
+    "errorToast": "Os bares não puderam ser carregados. Tente novamente.",
+    "retry": "Tentar novamente",
+    "dismissToast": "Fechar notificação",
+    "pagination": "Páginas de resultados de bares",
+    "previousPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "page": "Página {page} de {totalPages}",
+    "range": "{start}–{end} de {total, plural, one {# bar} other {# bares}}"
   },
   "Places": {
     "casa-da-esquina": {
@@ -118,8 +128,7 @@
     "information": "Informações do bar",
     "highlights": "O que você encontra",
     "hours": "Horários",
-    "neighborhood": "Bairro",
-    "disclaimer": "Dados de demonstração."
+    "neighborhood": "Bairro"
   },
   "NotFound": {
     "pageTitle": "Página não encontrada — GeoBar",
