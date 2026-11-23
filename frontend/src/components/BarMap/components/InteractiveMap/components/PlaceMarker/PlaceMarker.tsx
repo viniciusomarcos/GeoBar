@@ -5,6 +5,9 @@ import { Marker, Popup, useMap } from 'react-leaflet'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
 import type { DemoBar } from '@/data/demoBars'
+import { useExplorerSearch } from '@/hooks/useExplorerSearch'
+import { captureExplorerScroll } from '@/lib/explorerScroll'
+import { getBarDetailsHref } from '@/lib/explorerSearch'
 import { placeIcon } from '../../mapConfig'
 
 export const PlaceMarker = ({
@@ -17,6 +20,7 @@ export const PlaceMarker = ({
   const marker = useRef<LeafletMarker>(null)
   const t = useTranslations('Explorer')
   const map = useMap()
+  const search = useExplorerSearch()
   useEffect(() => {
     if (!selected) {
       return
@@ -42,7 +46,8 @@ export const PlaceMarker = ({
         </Text>
         <Text className="map-popup-description">{bar.description}</Text>
         <Pressable
-          href={`/bars/${bar.id}`}
+          href={getBarDetailsHref(bar.id, search)}
+          onClick={captureExplorerScroll}
           className="details-link map-popup-link"
         >
           {t('viewDetails')}

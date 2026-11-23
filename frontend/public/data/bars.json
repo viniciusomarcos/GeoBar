@@ -1,0 +1,23 @@
+[
+  {
+    "id": "casa-da-esquina",
+    "name": "Casa da Esquina",
+    "neighborhood": "Santa Tereza",
+    "illustration": "beer",
+    "position": [-19.9165, -43.9117]
+  },
+  {
+    "id": "quintal-do-sol",
+    "name": "Quintal do Sol",
+    "neighborhood": "Savassi",
+    "illustration": "garden",
+    "position": [-19.9382, -43.9341]
+  },
+  {
+    "id": "balcao-da-prosa",
+    "name": "Balcão da Prosa",
+    "neighborhood": "Floresta",
+    "illustration": "music",
+    "position": [-19.9127, -43.9327]
+  }
+]

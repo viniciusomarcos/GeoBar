@@ -3,6 +3,9 @@ import { useTranslations } from 'next-intl'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
 import type { DemoBar } from '@/data/demoBars'
+import { useExplorerSearch } from '@/hooks/useExplorerSearch'
+import { captureExplorerScroll } from '@/lib/explorerScroll'
+import { getBarDetailsHref } from '@/lib/explorerSearch'
 
 const illustrations = { beer: Beer, garden: TreePine, music: Music2 }
 
@@ -14,6 +17,8 @@ export const PlaceCard = ({
   onSelect: () => void
 }) => {
   const t = useTranslations('Explorer')
+  const search = useExplorerSearch()
+  const detailsHref = getBarDetailsHref(bar.id, search)
   const Illustration = illustrations[bar.illustration]
 
   return (
@@ -34,7 +39,11 @@ export const PlaceCard = ({
           {bar.neighborhood}
         </Text>
         <Text as="h3" className="mt-3 text-2xl font-semibold tracking-tight">
-          <Pressable href={`/bars/${bar.id}`} className="place-title-link">
+          <Pressable
+            href={detailsHref}
+            onClick={captureExplorerScroll}
+            className="place-title-link"
+          >
             {bar.name}
           </Pressable>
         </Text>
@@ -42,7 +51,11 @@ export const PlaceCard = ({
           {bar.description}
         </Text>
         <div className="place-actions">
-          <Pressable href={`/bars/${bar.id}`} className="details-link">
+          <Pressable
+            href={detailsHref}
+            onClick={captureExplorerScroll}
+            className="details-link"
+          >
             {t('viewDetails')}
           </Pressable>
           <Pressable

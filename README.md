@@ -15,10 +15,12 @@ GeoBar helps users discover bars in Belo Horizonte. Developed for Software
 Engineering II at UFMG, it is inspired by
 [this computational geometry project](https://github.com/amt-cc/tp1-geometria-computacional).
 
-The frontend offers bar search, neighborhood filters, an interactive map, and
-bar details using demo data. Portuguese (default), English, and light/dark theme
-preferences are saved in the browser. A separate ETL pipeline imports CSV and
-OpenStreetMap data into PostgreSQL/PostGIS.
+The frontend offers debounced bar search with 12 results per page, neighborhood
+filters, an interactive map, and bar details using demo data. Search state
+survives detail-page navigation. The catalog loads asynchronously with skeletons,
+retry, and error notifications. Portuguese (default), English, and light/dark
+theme preferences are saved in the browser. A separate ETL pipeline imports
+CSV and OpenStreetMap data into PostgreSQL/PostGIS.
 
 Production (`main`): [geo-bar.vercel.app](https://geo-bar.vercel.app).
 
@@ -77,9 +79,9 @@ Cypress uses port **4173** and requires its
 
 | Suite | Unit tests | E2E tests |
 | --- | ---: | ---: |
-| Frontend | 75 | 44 |
-| ETL | 13 | 0 |
-| **Total** | **88** | **44** |
+| Frontend | 136 | 54 |
+| ETL | 20 | 0 |
+| **Total** | **156** | **54** |
 
 Counts include desktop and mobile test cases separately, without retries.
 

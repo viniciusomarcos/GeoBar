@@ -48,6 +48,7 @@ for (const viewport of viewports) {
         .its('documentElement.scrollWidth')
         .should('be.lte', viewport.width)
       cy.contains('Lugares fictícios').should('not.exist')
+      cy.contains('Dados de demonstração.').should('not.exist')
       cy.get('.bar-map .map-marker').should('have.length', 3)
       cy.get('.bar-map .leaflet-tile-loaded').should(
         'have.length.greaterThan',
@@ -111,7 +112,7 @@ for (const viewport of viewports) {
     })
 
     it('finds a place by name and updates the map markers', () => {
-      cy.get('input[type="search"]').type('balcao{enter}')
+      cy.get('input[type="search"]').type('balcao')
       cy.get('article').should('have.length', 1)
       cy.contains('h3', 'Balcão da Prosa').should('be.visible')
       cy.get('[role="status"]').should('have.text', '1 bar')
@@ -248,6 +249,7 @@ for (const viewport of viewports) {
       cy.location('pathname').should('eq', '/bars/casa-da-esquina')
       cy.contains('h1', 'Casa da Esquina').should('be.visible')
       cy.contains('h2', 'Sobre o bar').should('be.visible')
+      cy.contains('Dados de demonstração.').should('not.exist')
       cy.contains('Terça a domingo').should('be.visible')
       cy.get('.bar-map .map-marker').should('have.length', 1)
       cy.get('[role="switch"]').click()

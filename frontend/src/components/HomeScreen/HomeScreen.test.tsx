@@ -69,7 +69,7 @@ describe('HomeScreen', () => {
     expect(screen.getByText('Live music')).toBeVisible()
     expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
       'href',
-      '/bars/balcao-da-prosa'
+      '/bars/balcao-da-prosa?q=balcao&neighborhood=Floresta'
     )
   })
 })

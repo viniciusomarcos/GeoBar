@@ -62,8 +62,18 @@
     "viewOnMap": "View on map",
     "emptyTitle": "No places found",
     "emptyDescription": "Try another name or neighborhood, or clear your filters.",
-    "disclaimer": "Demo data.",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "loading": "Loading bars…",
+    "errorTitle": "We could not load the bars",
+    "errorDescription": "Check your connection and try again. Your search is saved.",
+    "errorToast": "The bars could not be loaded. Please try again.",
+    "retry": "Try again",
+    "dismissToast": "Dismiss notification",
+    "pagination": "Bar results pages",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {page} of {totalPages}",
+    "range": "{start}–{end} of {total, plural, one {# bar} other {# bars}}"
   },
   "Places": {
     "casa-da-esquina": {
@@ -106,8 +116,7 @@
     "information": "Bar information",
     "highlights": "What you will find",
     "hours": "Opening hours",
-    "neighborhood": "Neighborhood",
-    "disclaimer": "Demo data."
+    "neighborhood": "Neighborhood"
   },
   "NotFound": {
     "pageTitle": "Page not found — GeoBar",
