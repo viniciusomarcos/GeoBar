@@ -10,6 +10,8 @@ import { PageMetadata } from '@/components/PageMetadata'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
 import { type DemoBar, getDemoBar } from '@/data/demoBars'
+import { useExplorerSearch } from '@/hooks/useExplorerSearch'
+import { getExplorerHref } from '@/lib/explorerSearch'
 import { BarInformation } from './components/BarInformation'
 import { BarOverview } from './components/BarOverview'
 
@@ -17,6 +19,7 @@ export const BarDetailsScreen = ({ bar }: { bar: DemoBar }) => {
   const locale = useLocale()
   const t = useTranslations('Details')
   const navigation = useTranslations('Navigation')
+  const search = useExplorerSearch()
   const localized = useMemo(
     () => getDemoBar(bar.id, locale) ?? bar,
     [bar, locale]
@@ -38,7 +41,7 @@ export const BarDetailsScreen = ({ bar }: { bar: DemoBar }) => {
         tabIndex={-1}
         className="section-shell bar-details"
       >
-        <Pressable href="/#explore" className="back-link">
+        <Pressable href={getExplorerHref(search)} className="back-link">
           <ArrowLeft aria-hidden="true" className="size-4" />
           {t('back')}
         </Pressable>
@@ -53,7 +56,6 @@ export const BarDetailsScreen = ({ bar }: { bar: DemoBar }) => {
           </section>
           <BarInformation bar={localized} />
         </div>
-        <Text className="demo-note">{t('disclaimer')}</Text>
       </main>
       <Footer />
     </>
