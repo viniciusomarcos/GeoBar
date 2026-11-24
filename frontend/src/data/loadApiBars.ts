@@ -75,10 +75,7 @@ const isApiBar = (value: unknown): value is ApiBar => {
 }
 
 const pickIllustration = (bar: ApiBar): DemoBar['illustration'] => {
-  if (
-    bar.category === 'biergarten' ||
-    bar.metadata.outdoor_seating === 'yes'
-  ) {
+  if (bar.category === 'biergarten' || bar.metadata.outdoor_seating === 'yes') {
     return 'garden'
   }
   return 'beer'
