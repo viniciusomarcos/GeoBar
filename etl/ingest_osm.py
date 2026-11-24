@@ -29,8 +29,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DEFAULT_LEGACY_CSV = Path(
-    "_legacy_tp/tp1-geometria-computacional-main/tp1/butecos_bh_geocodificado.csv"
+DEFAULT_LEGACY_CSV = (
+    Path(__file__).resolve().parent.parent / "database" / "seed" / "butecos_bh_geocodificado.csv"
 )
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
