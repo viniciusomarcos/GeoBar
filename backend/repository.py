@@ -1,27 +1,3 @@
-from typing import Any
-
-from pydantic import BaseModel
-
-
-class Bar(BaseModel):
-    id: int
-    name: str
-    address: str | None
-    neighborhood: str | None
-    category: str
-    source: str
-    metadata: dict[str, Any]
-    latitude: float
-    longitude: float
-
-
-class BarPage(BaseModel):
-    items: list[Bar]
-    page: int
-    page_size: int
-    total: int
-backend/repository.py
-python
 """Consultas SQL/PostGIS sobre a tabela bars."""
 
 from typing import Any
@@ -67,7 +43,9 @@ def search_bars(
         rows = conn.execute(sql, params).fetchall()
 
     total = rows[0]["total"] if rows else 0
-    items = [{key: value for key, value in row.items() if key != "total"} for row in rows]
+    items = [
+        {key: value for key, value in row.items() if key != "total"} for row in rows
+    ]
     return items, total
 
 
