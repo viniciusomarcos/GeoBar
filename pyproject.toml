@@ -2,6 +2,9 @@
 pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-v"
+markers = [
+    "integration: testes de integração que exigem PostgreSQL com PostGIS real",
+]
 
 [tool.coverage.run]
 source = ["etl"]
