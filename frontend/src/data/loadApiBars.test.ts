@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { loadApiBars, parseApiBars } from './loadApiBars'
+import { loadApiBar, loadApiBars, parseApiBars } from './loadApiBars'
 import { loadDemoBars } from './loadDemoBars'
 
 const apiBar = {
@@ -99,5 +99,45 @@ describe('API catalog requests', () => {
       expect.anything()
     )
     expect(bars).toHaveLength(1)
+  })
+})
+
+describe('API bar details requests', () => {
+  it('loads a single bar by its numeric identifier', async () => {
+    respondWith(apiBar)
+    const bar = await loadApiBar('http://api.test', '7', 'pt')
+    expect(fetch).toHaveBeenCalledWith(
+      'http://api.test/bars/7',
+      expect.objectContaining({ cache: 'no-store' })
+    )
+    expect(bar).toMatchObject({ id: '7', name: 'Bar do Zé' })
+  })
+
+  it('treats identifiers that are not numbers as missing without a request', async () => {
+    vi.mocked(fetch).mockClear()
+    expect(await loadApiBar('http://api.test', 'casa-da-esquina', 'pt')).toBe(
+      undefined
+    )
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('treats a 404 response as a missing bar', async () => {
+    vi.mocked(fetch).mockResolvedValue({ ok: false, status: 404 } as Response)
+    expect(await loadApiBar('http://api.test', '999', 'pt')).toBe(undefined)
+  })
+
+  it('rejects server errors and invalid payloads', async () => {
+    vi.mocked(fetch).mockResolvedValue({ ok: false, status: 500 } as Response)
+    await expect(loadApiBar('http://api.test', '7', 'pt')).rejects.toThrow(
+      'Unable to load'
+    )
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ id: 'x' })
+    } as Response)
+    await expect(loadApiBar('http://api.test', '7', 'pt')).rejects.toThrow(
+      'Invalid API bar'
+    )
   })
 })

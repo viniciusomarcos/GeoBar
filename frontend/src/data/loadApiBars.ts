@@ -109,12 +109,14 @@ export const parseApiBars = (payload: unknown, locale: Locale) => {
   return payload.map((bar) => toDemoBar(bar, locale))
 }
 
+const apiBaseUrl = (apiUrl: string) => apiUrl.replace(/\/+$/, '')
+
 export const loadApiBars = async (
   apiUrl: string,
   locale: Locale,
   signal: AbortSignal
 ) => {
-  const response = await fetch(`${apiUrl.replace(/\/+$/, '')}/bars/all`, {
+  const response = await fetch(`${apiBaseUrl(apiUrl)}/bars/all`, {
     signal,
     cache: 'no-store',
     headers: { Accept: 'application/json' }
@@ -123,4 +125,29 @@ export const loadApiBars = async (
     throw new Error('Unable to load the API bar catalog')
   }
   return parseApiBars(await response.json(), locale)
+}
+
+export const loadApiBar = async (
+  apiUrl: string,
+  id: string,
+  locale: Locale
+): Promise<DemoBar | undefined> => {
+  if (!/^\d+$/.test(id)) {
+    return undefined
+  }
+  const response = await fetch(`${apiBaseUrl(apiUrl)}/bars/${id}`, {
+    cache: 'no-store',
+    headers: { Accept: 'application/json' }
+  })
+  if (response.status === 404) {
+    return undefined
+  }
+  if (!response.ok) {
+    throw new Error('Unable to load the API bar')
+  }
+  const payload: unknown = await response.json()
+  if (!isApiBar(payload)) {
+    throw new Error('Invalid API bar')
+  }
+  return toDemoBar(payload, locale)
 }
