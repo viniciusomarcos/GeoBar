@@ -1,0 +1,5 @@
+# Envia ao Docker apenas o que a imagem da API precisa
+# (evita mandar node_modules, .venv, frontend etc.)
+*
+!backend/
+backend/__pycache__/

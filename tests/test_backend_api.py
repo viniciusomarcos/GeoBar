@@ -101,3 +101,22 @@ def test_get_connection_requires_database_url(monkeypatch):
     monkeypatch.delenv("DATABASE_URL", raising=False)
     with pytest.raises(RuntimeError), db.get_connection():
         pass
+
+
+def test_root_redirects_to_docs():
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/docs"
+
+
+def test_all_bars_route_returns_every_bar(monkeypatch):
+    monkeypatch.setattr(repository, "list_all_bars", lambda: [SAMPLE_BAR, SAMPLE_BAR])
+    response = client.get("/bars/all")
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+
+
+def test_list_all_bars_passes_limit(monkeypatch):
+    conn = use_fake_db(monkeypatch, [SAMPLE_BAR])
+    assert repository.list_all_bars(limit=5) == [SAMPLE_BAR]
+    assert conn.calls[0][1] == {"limit": 5}

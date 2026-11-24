@@ -5,6 +5,7 @@ from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from backend import repository
 from backend.schemas import Bar, BarPage
@@ -22,6 +23,11 @@ app.add_middleware(
 )
 
 
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -35,6 +41,12 @@ def list_bars(
 ) -> BarPage:
     items, total = repository.search_bars(q=q, neighborhood=neighborhood, page=page)
     return BarPage(items=items, page=page, page_size=repository.PAGE_SIZE, total=total)
+
+
+# /bars/all precisa vir ANTES de /bars/{bar_id}
+@app.get("/bars/all", response_model=list[Bar])
+def list_all_bars() -> list[Bar]:
+    return repository.list_all_bars()
 
 
 @app.get("/bars/{bar_id}", response_model=Bar)

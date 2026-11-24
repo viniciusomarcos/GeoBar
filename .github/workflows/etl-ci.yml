@@ -38,11 +38,11 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run Ruff linter
-        run: ruff check etl tests
+        run: ruff check etl backend tests
 
       - name: Run unit tests with coverage
         run: >-
-          pytest --cov=etl
+          pytest --cov=etl --cov=backend
           --cov-report=xml:coverage.xml
           --cov-report=term-missing
           --cov-fail-under=80

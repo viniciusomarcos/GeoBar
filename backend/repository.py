@@ -5,6 +5,7 @@ from typing import Any
 from backend.db import get_connection
 
 PAGE_SIZE = 12
+MAX_ALL_BARS = 2000
 
 BAR_COLUMNS = """
     id, name, address, neighborhood, category, source, metadata,
@@ -47,6 +48,13 @@ def search_bars(
         {key: value for key, value in row.items() if key != "total"} for row in rows
     ]
     return items, total
+
+
+def list_all_bars(limit: int = MAX_ALL_BARS) -> list[dict[str, Any]]:
+    """Todos os bares de uma vez, para o frontend filtrar no navegador."""
+    sql = f"SELECT {BAR_COLUMNS} FROM bars ORDER BY name ASC, id ASC LIMIT %(limit)s"
+    with get_connection() as conn:
+        return conn.execute(sql, {"limit": limit}).fetchall()
 
 
 def get_bar(bar_id: int) -> dict[str, Any] | None:
