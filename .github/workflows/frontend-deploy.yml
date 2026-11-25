@@ -36,6 +36,7 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_ENVIRONMENT: ${{ inputs.environment }}
       CYPRESS_INSTALL_BINARY: '0'
+      NEXT_PUBLIC_API_URL: https://geobar-api.onrender.com
     outputs:
       url: ${{ steps.deployment.outputs.url }}
     steps:
