@@ -131,10 +131,26 @@ def parse_osm_elements(elements: list[dict[str, Any]]) -> list[dict[str, Any]]:
         address_parts = [p for p in [street, housenumber, neighborhood] if p]
         address = ", ".join(address_parts) if address_parts else None
 
+        phone = tags.get("phone") or tags.get("contact:phone") or tags.get("contact:whatsapp")
+        website = tags.get("website") or tags.get("contact:website")
+        instagram = tags.get("contact:instagram") or tags.get("instagram")
+
+        raw_metadata = {
+            "phone": phone,
+            "website": website,
+            "instagram": instagram,
+            "opening_hours": tags.get("opening_hours"),
+            "cuisine": tags.get("cuisine"),
+            "outdoor_seating": tags.get("outdoor_seating"),
+            "wheelchair": tags.get("wheelchair"),
+            "internet_access": tags.get("internet_access"),
+            "description": tags.get("description"),
+            "postcode": tags.get("addr:postcode"),
+        }
         extra_metadata = {
-            key: value
-            for key, value in tags.items()
-            if key in {"phone", "website", "opening_hours", "cuisine", "outdoor_seating"}
+            key: str(value).strip()
+            for key, value in raw_metadata.items()
+            if value is not None and str(value).strip()
         }
 
         records.append(
