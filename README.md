@@ -18,7 +18,9 @@ Engineering II at UFMG, it is inspired by
 [this computational geometry project](https://github.com/amt-cc/tp1-geometria-computacional).
 
 The frontend offers debounced bar search with 12 results per page, neighborhood
-filters, an interactive map, and bar details using demo data. Search state
+filters, an interactive map, and bar details using the public FastAPI backend.
+Cards show the available category, location, and address without image placeholders.
+Search state
 survives detail-page navigation. The catalog loads asynchronously with skeletons,
 retry, and error notifications. Portuguese (default), English, and light/dark
 theme preferences are saved in the browser. A separate ETL pipeline imports
@@ -36,6 +38,9 @@ pnpm start
 ```
 
 Open <http://localhost:3000>. For production, use `pnpm build` and `pnpm start:prod`.
+The frontend uses [the public API](https://geobar-api.onrender.com/docs) by default.
+Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to override it. Browser requests
+use the frontend's `/api` proxy, including Vercel previews.
 Hero photo: [KC Shum / Unsplash](https://unsplash.com/photos/jwowyIij6ss).
 
 ## Technologies
@@ -44,6 +49,7 @@ Hero photo: [KC Shum / Unsplash](https://unsplash.com/photos/jwowyIij6ss).
 - Tailwind CSS and Lucide: styling and icons.
 - next-intl: English and Portuguese translations.
 - Leaflet and OpenStreetMap: interactive map and basemap.
+- FastAPI and Uvicorn: HTTP API hosted on Render.
 - Python, Requests, and Psycopg: data ingestion.
 - PostgreSQL/PostGIS (Supabase) and Docker Compose: spatial database and local infrastructure.
 - pnpm, Biome, and Ruff: dependency management, formatting, and linting.
@@ -64,7 +70,7 @@ Run the frontend checks from the repository root after installing dependencies:
 pnpm lint
 pnpm typecheck
 pnpm test:coverage
-pnpm build
+pnpm build:test
 pnpm test:e2e
 ```
 
@@ -85,13 +91,15 @@ frontend checks lines, statements, functions, and branches.
 The frontend HTML report is at `frontend/coverage/index.html`.
 Cypress uses port **4173** and requires its
 [system dependencies](https://docs.cypress.io/app/get-started/install-cypress#Linux-Prerequisites).
+`build:test` targets a local API fixture on port **4174**, started automatically
+by the E2E command. Fixtures are used only in tests.
 
 | Suite | Unit tests | Integration tests | E2E tests |
 | --- | ---: | ---: | ---: |
-| Frontend | 136 | 0 | 54 |
-| Backend | 12 | 0 | 0 |
+| Frontend | 147 | 0 | 61 |
+| Backend | 21 | 0 | 0 |
 | ETL / PostGIS | 20 | 4 | 0 |
-| **Total** | **168** | **4** | **54** |
+| **Total** | **188** | **4** | **61** |
 
 Counts include desktop and mobile test cases separately, without retries.
 

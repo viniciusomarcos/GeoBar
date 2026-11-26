@@ -1,11 +1,11 @@
-import places from '../../public/data/bars.json'
+import places from '../fixtures/apiBars.json'
 import { stubMapTiles } from '../support/mapTiles'
 
 beforeEach(stubMapTiles)
 
 describe('Catalog request states', () => {
   it('shows a skeleton until the catalog arrives', () => {
-    cy.intercept('GET', '/data/bars.json', { body: places, delay: 800 }).as(
+    cy.intercept('GET', '**/bars/all', { body: places, delay: 800 }).as(
       'catalog'
     )
     cy.visit('/#explore')
@@ -22,9 +22,7 @@ describe('Catalog request states', () => {
   })
 
   it('offers retry and an error toast while retaining the requested filters', () => {
-    cy.intercept('GET', '/data/bars.json', { statusCode: 503 }).as(
-      'unavailable'
-    )
+    cy.intercept('GET', '**/bars/all', { statusCode: 503 }).as('unavailable')
     cy.visit('/?q=Quintal&neighborhood=Savassi#explore')
     cy.wait('@unavailable')
     cy.contains('h3', 'Não foi possível carregar os bares').should('be.visible')
@@ -37,7 +35,7 @@ describe('Catalog request states', () => {
     cy.get('button[aria-label="Fechar notificação"]').click()
     cy.get('[role="alert"]').should('not.exist')
 
-    cy.intercept('GET', '/data/bars.json', { body: places, delay: 300 }).as(
+    cy.intercept('GET', '**/bars/all', { body: places, delay: 300 }).as(
       'recovered'
     )
     cy.contains('button', 'Tentar novamente').click()
@@ -53,8 +51,8 @@ describe('Catalog request states', () => {
   })
 
   it('treats a malformed response as an error instead of an empty catalog', () => {
-    cy.intercept('GET', '/data/bars.json', {
-      body: [{ ...places[0], position: [null, null] }]
+    cy.intercept('GET', '**/bars/all', {
+      body: [{ ...places[0], latitude: null }]
     })
     cy.visit('/#explore')
     cy.contains('h3', 'Não foi possível carregar os bares').should('be.visible')
@@ -63,7 +61,7 @@ describe('Catalog request states', () => {
   })
 
   it('shows an empty state after a successful empty response', () => {
-    cy.intercept('GET', '/data/bars.json', { body: [] })
+    cy.intercept('GET', '**/bars/all', { body: [] })
     cy.visit('/#explore')
     cy.contains('h3', 'Nenhum lugar encontrado').should('be.visible')
     cy.get('[role="status"]').should('have.text', '0 bares')
@@ -76,6 +74,42 @@ describe('Catalog request states', () => {
 })
 
 describe('Search navigation and pagination', () => {
+  it('returns to the first result when changing pages at the bottom of the list', () => {
+    const catalog = [
+      ...places,
+      ...Array.from({ length: 10 }, (_, index) => ({
+        ...places[0],
+        id: 100 + index,
+        name: `Additional bar ${index + 1}`
+      }))
+    ]
+    cy.intercept('GET', '**/bars/all', { body: catalog })
+    cy.visit('/#explore')
+    cy.get('article').should('have.length', 12)
+    cy.get('article')
+      .first()
+      .should(($card) => {
+        expect($card[0].getBoundingClientRect().height).to.be.greaterThan(200)
+      })
+    cy.get('button[aria-label="Próxima página"]').scrollIntoView().click()
+
+    cy.location('search').should('include', 'page=2')
+    cy.get('article').should('have.length', 1)
+    cy.get('.results-start')
+      .should('have.focus')
+      .and(($results) => {
+        expect($results[0].getBoundingClientRect().top).to.be.within(0, 40)
+      })
+
+    cy.get('button[aria-label="Página anterior"]').scrollIntoView().click()
+    cy.get('article').should('have.length', 12)
+    cy.get('.results-start')
+      .should('have.focus')
+      .and(($results) => {
+        expect($results[0].getBoundingClientRect().top).to.be.within(0, 40)
+      })
+  })
+
   it('debounces consecutive edits and searches without submitting the form', () => {
     cy.visit('/#explore')
     cy.get('article').should('have.length', 3)
@@ -137,7 +171,7 @@ describe('Search navigation and pagination', () => {
       top = win.scrollY
     })
     cy.get('article .details-link').click({ scrollBehavior: false })
-    cy.location('pathname').should('eq', '/bars/quintal-do-sol')
+    cy.location('pathname').should('eq', '/bars/2')
 
     cy.contains('a', 'Voltar para os bares').click()
 
@@ -154,7 +188,7 @@ describe('Search navigation and pagination', () => {
     cy.visit('/?q=balcao&neighborhood=Floresta#explore')
     cy.contains('a', 'Ver no mapa').click()
     cy.get('.leaflet-popup').contains('a', 'Ver detalhes').click()
-    cy.location('pathname').should('eq', '/bars/balcao-da-prosa')
+    cy.location('pathname').should('eq', '/bars/3')
 
     cy.contains('a', 'Voltar para os bares').click()
 

@@ -3,8 +3,9 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useRef } from 'react'
 import { Marker, Popup, useMap } from 'react-leaflet'
 import { Pressable } from '@/components/Pressable'
+import { ShouldRender } from '@/components/ShouldRender'
 import { Text } from '@/components/Text'
-import type { DemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
 import { useExplorerSearch } from '@/hooks/useExplorerSearch'
 import { captureExplorerScroll } from '@/lib/explorerScroll'
 import { getBarDetailsHref } from '@/lib/explorerSearch'
@@ -14,7 +15,7 @@ export const PlaceMarker = ({
   bar,
   selected
 }: {
-  bar: DemoBar
+  bar: Bar
   selected: boolean
 }) => {
   const marker = useRef<LeafletMarker>(null)
@@ -42,9 +43,11 @@ export const PlaceMarker = ({
           {bar.name}
         </Text>
         <Text className="map-popup-neighborhood">
-          {bar.neighborhood} · {bar.atmosphere}
+          {bar.neighborhood} · {bar.category}
         </Text>
-        <Text className="map-popup-description">{bar.description}</Text>
+        <ShouldRender if={Boolean(bar.address)}>
+          <Text className="map-popup-description">{bar.address}</Text>
+        </ShouldRender>
         <Pressable
           href={getBarDetailsHref(bar.id, search)}
           onClick={captureExplorerScroll}

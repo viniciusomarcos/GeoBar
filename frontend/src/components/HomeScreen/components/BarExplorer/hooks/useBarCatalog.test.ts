@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Locale } from '@/i18n/config'
-import places from '../../../../../../public/data/bars.json'
+import { apiBars as places } from '@/test/bars'
 import { useBarCatalog } from './useBarCatalog'
 
 const response = (): Response =>
@@ -32,7 +32,7 @@ describe('Bar catalog requests', () => {
 
     await act(async () => pending.resolve(response()))
 
-    expect(view.result.current.bars[0].atmosphere).toBe('Buteco clássico')
+    expect(view.result.current.bars[0].category).toBe('Bar')
   })
 
   it('ignores errors from an aborted request', async () => {

@@ -52,7 +52,7 @@
     "description": "Clássicos de calçada, quintais arborizados e um lugar no balcão. Qual deles combina com você?",
     "formLabel": "Encontrar bares",
     "inputLabel": "Buscar bares",
-    "placeholder": "Busque por nome, bairro ou música ao vivo",
+    "placeholder": "Busque por nome, bairro ou endereço",
     "search": "Buscar",
     "neighborhoods": "Filtros de bairro",
     "allNeighborhoods": "Todos os bairros",
@@ -75,41 +75,6 @@
     "page": "Página {page} de {totalPages}",
     "range": "{start}–{end} de {total, plural, one {# bar} other {# bares}}"
   },
-  "Places": {
-    "casa-da-esquina": {
-      "description": "Uma mesa na calçada, uma bebida gelada e uma conversa sem hora para acabar.",
-      "atmosphere": "Buteco clássico",
-      "story": "Um buteco de bairro para sentar sem pressa e deixar a conversa acontecer. Na calçada, as mesas se juntam ao longo da noite; no balcão, os petiscos chegam para compartilhar.",
-      "highlights": [
-        "Mesas na calçada",
-        "Petiscos para compartilhar",
-        "Cerveja gelada"
-      ],
-      "hours": "Terça a domingo, das 17h à meia-noite."
-    },
-    "quintal-do-sol": {
-      "description": "Um quintal ao ar livre para uma tarde tranquila que se estende até a noite.",
-      "atmosphere": "Mesas ao ar livre",
-      "story": "Um quintal arborizado no meio da Savassi, com espaço para aproveitar a tarde e esticar o encontro até a noite. A proposta é simples: comida para dividir, um lugar ao ar livre e boa companhia.",
-      "highlights": [
-        "Quintal arborizado",
-        "Mesas ao ar livre",
-        "Opções vegetarianas"
-      ],
-      "hours": "Quarta a domingo, das 12h às 23h."
-    },
-    "balcao-da-prosa": {
-      "description": "Boa companhia no balcão, um pouco de música ao vivo e mais uma rodada.",
-      "atmosphere": "Música ao vivo",
-      "story": "Um balcão acolhedor na Floresta para ouvir música e descobrir uma nova conversa. A programação de música ao vivo combina com porções para dividir e encontros em grupos pequenos.",
-      "highlights": [
-        "Música ao vivo",
-        "Porções para dividir",
-        "Ambiente intimista"
-      ],
-      "hours": "Quinta a domingo, das 18h à 1h."
-    }
-  },
   "About": {
     "eyebrow": "Mais que um lugar no mapa",
     "titleFirst": "Mais perto do bairro.",
@@ -124,11 +89,11 @@
   "Details": {
     "pageTitle": "{name} — GeoBar",
     "back": "Voltar para os bares",
-    "about": "Sobre o bar",
     "information": "Informações do bar",
-    "highlights": "O que você encontra",
     "hours": "Horários",
-    "neighborhood": "Bairro"
+    "neighborhood": "Bairro",
+    "location": "Localização",
+    "directions": "Como chegar"
   },
   "NotFound": {
     "pageTitle": "Página não encontrada — GeoBar",

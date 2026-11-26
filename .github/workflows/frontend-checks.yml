@@ -47,8 +47,8 @@ jobs:
       - name: Run unit tests with coverage
         run: pnpm test:coverage
 
-      - name: Build the production application
-        run: pnpm build
+      - name: Build the production application for E2E tests
+        run: pnpm build:test
 
       - name: Install Cypress binary
         run: pnpm exec cypress install

@@ -18,8 +18,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "start-server-and-test \"next start --hostname 127.0.0.1 --port 4173\" http://127.0.0.1:4173 \"cypress run\"",
-    "test:e2e:ui": "start-server-and-test \"next dev --webpack --hostname 127.0.0.1 --port 4173\" http://127.0.0.1:4173 \"cypress open\""
+    "test:e2e": "start-server-and-test \"node cypress/support/apiServer.mjs\" http://127.0.0.1:4174/health \"next start --hostname 127.0.0.1 --port 4173\" http://127.0.0.1:4173 \"cypress run\"",
+    "test:e2e:ui": "start-server-and-test \"next dev --webpack --hostname 127.0.0.1 --port 4173\" http://127.0.0.1:4173 \"cypress open\"",
+    "build:test": "node cypress/support/buildE2e.mjs"
   },
   "dependencies": {
     "leaflet": "1.9.4",

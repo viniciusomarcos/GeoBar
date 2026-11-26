@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { DemoBar } from '@/data/demoBars'
-import { loadDemoBars } from '@/data/loadDemoBars'
+import type { Bar } from '@/data/bar'
+import { loadApiBars } from '@/data/loadApiBars'
 import type { Locale } from '@/i18n/config'
 
 type CatalogState = {
   status: 'loading' | 'success' | 'error'
-  bars: Array<DemoBar>
+  bars: Array<Bar>
 }
 
 export const useBarCatalog = (locale: Locale) => {
@@ -20,7 +20,7 @@ export const useBarCatalog = (locale: Locale) => {
   useEffect(() => {
     const controller = new AbortController()
     setState((current) => ({ ...current, status: 'loading' }))
-    loadDemoBars(locale, controller.signal).then(
+    loadApiBars('/api', locale, controller.signal).then(
       (bars) => {
         if (controller.signal.aborted) {
           return

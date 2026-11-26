@@ -19,7 +19,8 @@
     "test:e2e": "pnpm --filter geobar-frontend test:e2e",
     "test:e2e:ui": "pnpm --filter geobar-frontend test:e2e:ui",
     "dev:all": "docker compose up -d --build && pnpm start",
-    "stop:all": "docker compose down"
+    "stop:all": "docker compose down",
+    "build:test": "pnpm --filter geobar-frontend build:test"
   },
   "devDependencies": {
     "vercel": "66.5.0"

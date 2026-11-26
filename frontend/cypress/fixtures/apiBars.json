@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1,
+    "name": "Casa da Esquina",
+    "address": "Rua Mármore, 10, Santa Tereza",
+    "neighborhood": "Santa Tereza",
+    "category": "bar",
+    "source": "test_fixture",
+    "metadata": {
+      "opening_hours": "Tu-Su 17:00-00:00"
+    },
+    "latitude": -19.9161,
+    "longitude": -43.9179
+  },
+  {
+    "id": 2,
+    "name": "Quintal do Sol",
+    "address": "Rua Paraíba, 100, Savassi",
+    "neighborhood": "Savassi",
+    "category": "biergarten",
+    "source": "test_fixture",
+    "metadata": {},
+    "latitude": -19.938,
+    "longitude": -43.934
+  },
+  {
+    "id": 3,
+    "name": "Balcão da Prosa",
+    "address": "Rua Itajubá, 30, Floresta",
+    "neighborhood": "Floresta",
+    "category": "pub",
+    "source": "test_fixture",
+    "metadata": {
+      "opening_hours": "Th-Su 18:00-01:00"
+    },
+    "latitude": -19.91,
+    "longitude": -43.926
+  }
+]

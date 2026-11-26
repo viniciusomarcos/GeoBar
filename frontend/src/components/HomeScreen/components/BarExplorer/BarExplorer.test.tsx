@@ -1,12 +1,11 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { getDemoBars } from '@/data/demoBars'
-import * as demoCatalog from '@/data/loadDemoBars'
+import * as apiCatalog from '@/data/loadApiBars'
 import type { Locale } from '@/i18n/config'
 import { captureExplorerScroll } from '@/lib/explorerScroll'
+import { getTestBars, apiBars as places } from '@/test/bars'
 import { renderWithIntl } from '@/test/render'
-import places from '../../../../../public/data/bars.json'
 import { BarExplorer } from './BarExplorer'
 
 const renderExplorer = async (locale: Locale = 'en') => {
@@ -27,7 +26,7 @@ describe('BarExplorer', () => {
 
     await user.type(
       screen.getByRole('searchbox', { name: 'Buscar bares' }),
-      'musica ao vivo{Enter}'
+      'pub{Enter}'
     )
 
     expect(
@@ -154,8 +153,8 @@ describe('BarExplorer', () => {
   })
 
   it('cancels pending typing when browser history changes only the page', async () => {
-    const bars = getDemoBars('en')
-    vi.spyOn(demoCatalog, 'loadDemoBars').mockResolvedValue([
+    const bars = getTestBars('en')
+    vi.spyOn(apiCatalog, 'loadApiBars').mockResolvedValue([
       ...bars,
       ...Array.from({ length: 10 }, (_, index) => ({
         ...bars[0],
@@ -341,7 +340,7 @@ describe('BarExplorer', () => {
   })
 
   it('paginates in groups of twelve and resets the page when filters change', async () => {
-    const bars = getDemoBars('en')
+    const bars = getTestBars('en')
     const catalog = [
       ...bars,
       ...Array.from({ length: 10 }, (_, index) => ({
@@ -350,7 +349,7 @@ describe('BarExplorer', () => {
         name: `Extra ${index + 1}`
       }))
     ]
-    vi.spyOn(demoCatalog, 'loadDemoBars').mockResolvedValue(catalog)
+    vi.spyOn(apiCatalog, 'loadApiBars').mockResolvedValue(catalog)
     const user = userEvent.setup()
     await renderExplorer()
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
@@ -359,6 +358,11 @@ describe('BarExplorer', () => {
 
     await user.click(screen.getByRole('button', { name: 'Next page' }))
 
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      block: 'start',
+      behavior: 'auto'
+    })
+    expect(screen.getByRole('region', { name: 'Bars' })).toHaveFocus()
     expect(screen.getAllByRole('article')).toHaveLength(1)
     expect(screen.getByRole('heading', { name: 'Extra 10' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled()
@@ -401,6 +405,24 @@ describe('BarExplorer', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('omits a neighborhood filter when the API does not provide a neighborhood', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { ...places[0], neighborhood: null },
+        ...places.slice(1)
+      ]
+    } as Response)
+    await renderExplorer()
+    expect(screen.getAllByRole('article')).toHaveLength(3)
+    expect(
+      screen.queryByRole('button', { name: 'Belo Horizonte' })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Santa Tereza' })
+    ).not.toBeInTheDocument()
+  })
+
   it('uses the Portuguese plural form for zero results', async () => {
     const user = userEvent.setup()
     await renderExplorer('pt')
@@ -422,12 +444,10 @@ describe('BarExplorer', () => {
     const user = userEvent.setup()
     await renderExplorer()
     await user.click(screen.getAllByRole('link', { name: 'View on map' })[0])
-    expect(new URLSearchParams(window.location.search).get('bar')).toBe(
-      'casa-da-esquina'
-    )
+    expect(new URLSearchParams(window.location.search).get('bar')).toBe('1')
     expect(window.location.hash).toBe('#bar-map')
     expect(
       screen.getAllByRole('link', { name: 'View details' })[0]
-    ).toHaveAttribute('href', '/bars/casa-da-esquina?bar=casa-da-esquina')
+    ).toHaveAttribute('href', '/bars/1?bar=1')
   })
 })

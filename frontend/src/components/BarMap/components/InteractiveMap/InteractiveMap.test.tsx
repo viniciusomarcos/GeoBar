@@ -1,11 +1,11 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { getDemoBars } from '@/data/demoBars'
+import { getTestBars } from '@/test/bars'
 import { renderWithIntl } from '@/test/render'
 import { InteractiveMap } from './InteractiveMap'
 
-const bars = getDemoBars('en')
+const bars = getTestBars('en')
 
 describe('InteractiveMap', () => {
   it('renders each fictional place as an accessible marker and credits the basemap', () => {
@@ -41,10 +41,10 @@ describe('InteractiveMap', () => {
     renderWithIntl(<InteractiveMap bars={bars} selectedId={null} />)
     await user.click(screen.getByRole('button', { name: 'Casa da Esquina' }))
     expect(screen.getByText(bars[0].description)).toBeVisible()
-    expect(screen.getByText('Santa Tereza · Classic buteco')).toBeVisible()
+    expect(screen.getByText('Santa Tereza · Bar')).toBeVisible()
     expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
       'href',
-      '/bars/casa-da-esquina'
+      '/bars/1'
     )
   })
 
@@ -67,7 +67,7 @@ describe('InteractiveMap', () => {
     expect(screen.getByText(bars[2].description)).toBeVisible()
     expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
       'href',
-      '/bars/balcao-da-prosa'
+      '/bars/3'
     )
   })
 
