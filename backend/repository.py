@@ -61,3 +61,26 @@ def get_bar(bar_id: int) -> dict[str, Any] | None:
     sql = f"SELECT {BAR_COLUMNS} FROM bars WHERE id = %(id)s"
     with get_connection() as conn:
         return conn.execute(sql, {"id": bar_id}).fetchone()
+
+MAX_NEARBY_RADIUS_M = 10_000
+
+
+def find_nearby_bars(
+    latitude: float,
+    longitude: float,
+    radius_m: int = 1000,
+    limit: int = 20,
+) -> list[dict[str, Any]]:
+    sql = f"""
+        SELECT {BAR_COLUMNS},
+               ST_Distance(location, ref.point) AS distance_m
+        FROM bars,
+             (SELECT ST_SetSRID(ST_MakePoint(%(lng)s, %(lat)s), 4326)::geography
+                     AS point) AS ref
+        WHERE ST_DWithin(location, ref.point, %(radius)s)
+        ORDER BY distance_m ASC, id ASC
+        LIMIT %(limit)s
+    """
+    params = {"lat": latitude, "lng": longitude, "radius": radius_m, "limit": limit}
+    with get_connection() as conn:
+        return conn.execute(sql, params).fetchall()

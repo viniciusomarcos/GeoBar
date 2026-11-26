@@ -120,3 +120,47 @@ def test_list_all_bars_passes_limit(monkeypatch):
     conn = use_fake_db(monkeypatch, [SAMPLE_BAR])
     assert repository.list_all_bars(limit=5) == [SAMPLE_BAR]
     assert conn.calls[0][1] == {"limit": 5}
+
+NEARBY_BAR = {**SAMPLE_BAR, "distance_m": 152.4}
+
+
+def test_nearby_returns_bars_with_distance(monkeypatch):
+    conn = use_fake_db(monkeypatch, [NEARBY_BAR])
+    response = client.get("/bars/nearby", params={"lat": -19.92, "lng": -43.94})
+    assert response.status_code == 200
+    assert response.json() == [NEARBY_BAR]
+    _, params = conn.calls[0]
+    assert params == {"lat": -19.92, "lng": -43.94, "radius": 1000, "limit": 20}
+
+
+def test_nearby_uses_spatial_index_query(monkeypatch):
+    conn = use_fake_db(monkeypatch, [])
+    client.get("/bars/nearby", params={"lat": -19.92, "lng": -43.94, "radius": 500})
+    sql, params = conn.calls[0]
+    assert "ST_DWithin" in sql
+    assert "ST_MakePoint(%(lng)s, %(lat)s)" in sql
+    assert params["radius"] == 500
+
+
+def test_nearby_requires_coordinates():
+    assert client.get("/bars/nearby").status_code == 422
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {"lat": 91, "lng": -43.94},
+        {"lat": -19.92, "lng": 181},
+        {"lat": -19.92, "lng": -43.94, "radius": 0},
+        {"lat": -19.92, "lng": -43.94, "radius": 10_001},
+        {"lat": -19.92, "lng": -43.94, "limit": 101},
+    ],
+)
+def test_nearby_rejects_invalid_params(params):
+    assert client.get("/bars/nearby", params=params).status_code == 422
+
+
+def test_nearby_route_is_not_captured_by_bar_id(monkeypatch):
+    use_fake_db(monkeypatch, [])
+    response = client.get("/bars/nearby", params={"lat": 0, "lng": 0})
+    assert response.status_code == 200
