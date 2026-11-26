@@ -19,12 +19,26 @@ export const PlaceCard = ({
   const search = useExplorerSearch()
   const detailsHref = getBarDetailsHref(bar.id, search)
 
+  const formatDistance = (meters: number) => {
+    if (meters < 1000) {
+      return t('distanceMeters', { meters: Math.round(meters) })
+    }
+    return t('distanceKm', { km: (meters / 1000).toFixed(1) })
+  }
+
   return (
     <article className="place-card">
       <div className="place-card-content">
-        <Text as="span" className="category-badge">
-          {bar.category}
-        </Text>
+        <div className="flex flex-wrap items-center gap-2">
+          <Text as="span" className="category-badge">
+            {bar.category}
+          </Text>
+          <ShouldRender if={bar.distanceMeters !== undefined}>
+            <Text as="span" className="distance-badge">
+              {formatDistance(bar.distanceMeters ?? 0)}
+            </Text>
+          </ShouldRender>
+        </div>
         <Text className="mt-4 flex items-center gap-1.5 text-sm text-muted">
           <MapPin aria-hidden="true" className="size-4" />
           {bar.neighborhood}

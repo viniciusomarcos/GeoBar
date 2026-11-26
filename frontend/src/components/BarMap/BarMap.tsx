@@ -18,9 +18,18 @@ const InteractiveMap = dynamic(
 export type BarMapProps = {
   bars: ReadonlyArray<Bar>
   selectedId: string | null
+  radiusCenter?: readonly [latitude: number, longitude: number] | null
+  radiusMeters?: number
+  onSelectLocation?: (coords: readonly [number, number]) => void
 }
 
-export const BarMap = ({ bars, selectedId }: BarMapProps) => {
+export const BarMap = ({
+  bars,
+  selectedId,
+  radiusCenter = null,
+  radiusMeters,
+  onSelectLocation
+}: BarMapProps) => {
   const t = useTranslations('Map')
 
   return (
@@ -35,7 +44,13 @@ export const BarMap = ({ bars, selectedId }: BarMapProps) => {
           {t('title')}
         </Text>
       </div>
-      <InteractiveMap bars={bars} selectedId={selectedId} />
+      <InteractiveMap
+        bars={bars}
+        selectedId={selectedId}
+        radiusCenter={radiusCenter}
+        radiusMeters={radiusMeters}
+        onSelectLocation={onSelectLocation}
+      />
       <Text className="map-footnote">{t('hint')}</Text>
     </section>
   )

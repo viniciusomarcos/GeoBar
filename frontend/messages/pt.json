@@ -17,7 +17,8 @@
   "Map": {
     "label": "Mapa de bares em Belo Horizonte",
     "title": "Se encontre em BH",
-    "hint": "Selecione um marcador para conhecer o bar.",
+    "hint": "Selecione um marcador ou clique no mapa para buscar bares por raio.",
+    "radiusArea": "Área de busca de {radius}",
     "loading": "Carregando o mapa…",
     "unavailable": "Não foi possível carregar o fundo do mapa. Você ainda pode explorar os marcadores e a lista abaixo.",
     "zoomIn": "Aproximar",
@@ -73,7 +74,19 @@
     "previousPage": "Página anterior",
     "nextPage": "Próxima página",
     "page": "Página {page} de {totalPages}",
-    "range": "{start}–{end} de {total, plural, one {# bar} other {# bares}}"
+    "range": "{start}–{end} de {total, plural, one {# bar} other {# bares}}",
+    "radiusGroup": "Busca por raio",
+    "nearMe": "Perto de mim",
+    "locating": "Localizando…",
+    "clearRadius": "Limpar raio",
+    "radiusHint": "Ou clique em qualquer ponto do mapa para definir o centro.",
+    "radiusOptionMeters": "{meters} m",
+    "radiusOptionKm": "{km} km",
+    "distanceMeters": "{meters} m",
+    "distanceKm": "{km} km",
+    "geoUnsupported": "Seu navegador não suporta geolocalização. Clique em um ponto do mapa.",
+    "geoDenied": "Não foi possível obter sua localização. Você pode clicar diretamente no mapa.",
+    "nearbyError": "Não foi possível buscar bares nesse raio. Tente novamente."
   },
   "About": {
     "eyebrow": "Mais que um lugar no mapa",

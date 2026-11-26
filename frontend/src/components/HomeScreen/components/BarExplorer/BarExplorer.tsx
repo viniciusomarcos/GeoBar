@@ -27,16 +27,19 @@ import { filterBars } from '@/lib/filterBars'
 import { ExplorerSkeleton } from './components/ExplorerSkeleton'
 import { NeighborhoodFilters } from './components/NeighborhoodFilters'
 import { Pagination } from './components/Pagination'
+import { RadiusControls } from './components/RadiusControls'
 import { RequestError } from './components/RequestError'
 import { Results } from './components/Results'
 import { SearchForm } from './components/SearchForm'
 import { useBarCatalog } from './hooks/useBarCatalog'
+import { useNearbyBars } from './hooks/useNearbyBars'
 
 export const BarExplorer = () => {
   const locale = useLocale()
   const t = useTranslations('Explorer')
   const search = useExplorerSearch()
   const catalog = useBarCatalog(locale)
+  const nearby = useNearbyBars(locale)
   const neighborhoods = [
     ...new Set(
       catalog.bars
@@ -49,12 +52,19 @@ export const BarExplorer = () => {
   const [toastVisible, setToastVisible] = useState(false)
   const restoredScroll = useRef(false)
   const dismissToast = useCallback(() => setToastVisible(false), [])
+  const sourceBars =
+    nearby.center !== null && nearby.status === 'success'
+      ? nearby.bars
+      : catalog.bars
   const bars = useMemo(
-    () => filterBars(catalog.bars, search.query, search.neighborhood),
-    [catalog.bars, search.query, search.neighborhood]
+    () => filterBars(sourceBars, search.query, search.neighborhood),
+    [sourceBars, search.query, search.neighborhood]
   )
   const pagination = paginateBars(bars, search)
-  const hasFilters = search.query !== '' || search.neighborhood !== null
+  const hasFilters =
+    search.query !== '' ||
+    search.neighborhood !== null ||
+    nearby.center !== null
 
   useEffect(() => setDraftQuery(search.query), [search.query])
   useEffect(() => {
@@ -108,12 +118,20 @@ export const BarExplorer = () => {
 
   const clearFilters = () => {
     setDraftQuery('')
+    nearby.clear()
     updateExplorerSearch({
       query: '',
       neighborhood: null,
       page: 1,
       selectedId: null
     })
+  }
+
+  const selectRadiusCenter = (
+    coords: readonly [latitude: number, longitude: number]
+  ) => {
+    nearby.setCenter(coords)
+    updateExplorerSearch({ page: 1, selectedId: null })
   }
 
   const changePage = (page: number) => {
@@ -151,6 +169,14 @@ export const BarExplorer = () => {
           updateExplorerSearch({ neighborhood, page: 1, selectedId: null })
         }
       />
+      <RadiusControls
+        center={nearby.center}
+        radiusMeters={nearby.radiusMeters}
+        isError={nearby.status === 'error'}
+        onSelectCenter={selectRadiusCenter}
+        onChangeRadius={nearby.setRadiusMeters}
+        onClear={nearby.clear}
+      />
       <div className="mt-8 flex min-h-8 flex-wrap items-center justify-between gap-3">
         <ShouldRender if={catalog.status === 'success'}>
           <Text role="status" className="text-sm text-muted">
@@ -172,7 +198,13 @@ export const BarExplorer = () => {
           <RequestError onRetry={catalog.retry} />
         </ShouldRender>
         <ShouldRender if={catalog.status === 'success'}>
-          <BarMap bars={bars} selectedId={search.selectedId} />
+          <BarMap
+            bars={bars}
+            selectedId={search.selectedId}
+            radiusCenter={nearby.center}
+            radiusMeters={nearby.radiusMeters}
+            onSelectLocation={selectRadiusCenter}
+          />
           <section
             ref={resultsStart}
             tabIndex={-1}
