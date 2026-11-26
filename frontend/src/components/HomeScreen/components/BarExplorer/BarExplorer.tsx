@@ -44,6 +44,7 @@ export const BarExplorer = () => {
         .map((bar) => bar.neighborhood)
     )
   ]
+  const resultsStart = useRef<HTMLElement>(null)
   const [draftQuery, setDraftQuery] = useState(search.query)
   const [toastVisible, setToastVisible] = useState(false)
   const restoredScroll = useRef(false)
@@ -115,6 +116,16 @@ export const BarExplorer = () => {
     })
   }
 
+  const changePage = (page: number) => {
+    updateExplorerSearch({ page, selectedId: null })
+    resultsStart.current?.scrollIntoView({
+      block: 'start',
+      // Use the CSS scroll behavior, including reduced-motion preferences.
+      behavior: 'auto'
+    })
+    resultsStart.current?.focus({ preventScroll: true })
+  }
+
   return (
     <section id="explore" className="section-shell scroll-mt-8 py-20 sm:py-24">
       <div className="section-intro">
@@ -162,23 +173,28 @@ export const BarExplorer = () => {
         </ShouldRender>
         <ShouldRender if={catalog.status === 'success'}>
           <BarMap bars={bars} selectedId={search.selectedId} />
-          <Results
-            bars={pagination.bars}
-            onSelect={(selectedId) =>
-              updateExplorerSearch(
-                { selectedId },
-                { replace: true, hash: '#bar-map' }
-              )
-            }
-          />
+          <section
+            ref={resultsStart}
+            tabIndex={-1}
+            className="results-start"
+            aria-label={t('places')}
+          >
+            <Results
+              bars={pagination.bars}
+              onSelect={(selectedId) =>
+                updateExplorerSearch(
+                  { selectedId },
+                  { replace: true, hash: '#bar-map' }
+                )
+              }
+            />
+          </section>
           <ShouldRender if={bars.length > 0}>
             <Pagination
               page={pagination.page}
               totalPages={pagination.totalPages}
               total={bars.length}
-              onPageChange={(page) =>
-                updateExplorerSearch({ page, selectedId: null })
-              }
+              onPageChange={changePage}
             />
           </ShouldRender>
         </ShouldRender>

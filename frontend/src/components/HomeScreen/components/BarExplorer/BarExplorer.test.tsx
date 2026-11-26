@@ -358,6 +358,11 @@ describe('BarExplorer', () => {
 
     await user.click(screen.getByRole('button', { name: 'Next page' }))
 
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      block: 'start',
+      behavior: 'auto'
+    })
+    expect(screen.getByRole('region', { name: 'Bars' })).toHaveFocus()
     expect(screen.getAllByRole('article')).toHaveLength(1)
     expect(screen.getByRole('heading', { name: 'Extra 10' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled()

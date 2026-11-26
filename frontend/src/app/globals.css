@@ -476,6 +476,11 @@ input {
   overflow-wrap: anywhere;
 }
 
+.results-start {
+  scroll-margin-top: 24px;
+  outline: none;
+}
+
 .empty-state {
   margin-top: 16px;
   border: 1px dashed var(--border);

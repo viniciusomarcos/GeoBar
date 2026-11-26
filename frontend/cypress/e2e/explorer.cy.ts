@@ -74,6 +74,42 @@ describe('Catalog request states', () => {
 })
 
 describe('Search navigation and pagination', () => {
+  it('returns to the first result when changing pages at the bottom of the list', () => {
+    const catalog = [
+      ...places,
+      ...Array.from({ length: 10 }, (_, index) => ({
+        ...places[0],
+        id: 100 + index,
+        name: `Additional bar ${index + 1}`
+      }))
+    ]
+    cy.intercept('GET', '**/bars/all', { body: catalog })
+    cy.visit('/#explore')
+    cy.get('article').should('have.length', 12)
+    cy.get('article')
+      .first()
+      .should(($card) => {
+        expect($card[0].getBoundingClientRect().height).to.be.greaterThan(200)
+      })
+    cy.get('button[aria-label="Próxima página"]').scrollIntoView().click()
+
+    cy.location('search').should('include', 'page=2')
+    cy.get('article').should('have.length', 1)
+    cy.get('.results-start')
+      .should('have.focus')
+      .and(($results) => {
+        expect($results[0].getBoundingClientRect().top).to.be.within(0, 40)
+      })
+
+    cy.get('button[aria-label="Página anterior"]').scrollIntoView().click()
+    cy.get('article').should('have.length', 12)
+    cy.get('.results-start')
+      .should('have.focus')
+      .and(($results) => {
+        expect($results[0].getBoundingClientRect().top).to.be.within(0, 40)
+      })
+  })
+
   it('debounces consecutive edits and searches without submitting the form', () => {
     cy.visit('/#explore')
     cy.get('article').should('have.length', 3)
