@@ -27,13 +27,11 @@ describe('Explorer search addresses', () => {
 
   it('round-trips a filtered page and selected marker through details and back', () => {
     const search = parseExplorerSearch(
-      '?q=  balcão &neighborhood=Floresta&page=2&bar=balcao-da-prosa'
+      '?q=  balcão &neighborhood=Floresta&page=2&bar=3'
     )
     const query = serializeExplorerSearch(search)
     expect(parseExplorerSearch(query)).toEqual(search)
-    expect(getBarDetailsHref('balcao-da-prosa', search)).toBe(
-      `/bars/balcao-da-prosa${query}`
-    )
+    expect(getBarDetailsHref('3', search)).toBe(`/bars/3${query}`)
     expect(getExplorerHref(search)).toBe(`/${query}#explore`)
     expect(search.query).toBe('balcão')
   })

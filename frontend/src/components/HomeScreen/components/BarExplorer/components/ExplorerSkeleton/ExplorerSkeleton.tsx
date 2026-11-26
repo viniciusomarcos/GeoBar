@@ -11,7 +11,6 @@ export const ExplorerSkeleton = () => {
       <div className="mt-4 grid gap-5 md:grid-cols-3" aria-hidden="true">
         {[0, 1, 2].map((id) => (
           <div className="skeleton-card" key={id}>
-            <Skeleton className="skeleton-art" />
             <div className="space-y-4 p-6">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-7 w-3/4" />

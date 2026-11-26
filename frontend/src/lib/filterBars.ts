@@ -1,4 +1,4 @@
-import type { DemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
 
 const normalize = (value: string) =>
   value
@@ -8,18 +8,21 @@ const normalize = (value: string) =>
     .trim()
 
 export const filterBars = (
-  bars: ReadonlyArray<DemoBar>,
+  bars: ReadonlyArray<Bar>,
   query: string,
   neighborhood: string | null
-): Array<DemoBar> => {
+): Array<Bar> => {
   const normalizedQuery = normalize(query)
 
   return bars.filter((bar) => {
     const matchesNeighborhood =
       neighborhood === null || bar.neighborhood === neighborhood
-    const matchesQuery = [bar.name, bar.neighborhood, bar.atmosphere].some(
-      (value) => normalize(value).includes(normalizedQuery)
-    )
+    const matchesQuery = [
+      bar.name,
+      bar.neighborhood,
+      bar.category,
+      bar.address ?? ''
+    ].some((value) => normalize(value).includes(normalizedQuery))
 
     return matchesNeighborhood && matchesQuery
   })

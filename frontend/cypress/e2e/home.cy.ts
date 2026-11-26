@@ -195,12 +195,12 @@ for (const viewport of viewports) {
       cy.get('article')
         .should('have.length', 1)
         .and('contain.text', 'Balcão da Prosa')
-        .and('contain.text', 'Live music')
+        .and('contain.text', 'Pub')
       cy.get('.bar-map .map-marker')
         .should('have.length', 1)
         .and('have.attr', 'title', 'Balcão da Prosa')
       cy.contains('a', 'View on map').click()
-      cy.get('.leaflet-popup').should('contain.text', 'Live music')
+      cy.get('.leaflet-popup').should('contain.text', 'Pub')
       cy.location('pathname').should('eq', '/')
     })
 
@@ -246,18 +246,18 @@ for (const viewport of viewports) {
       cy.contains('article', 'Casa da Esquina')
         .contains('a', 'Ver detalhes')
         .click()
-      cy.location('pathname').should('eq', '/bars/casa-da-esquina')
+      cy.location('pathname').should('eq', '/bars/1')
       cy.contains('h1', 'Casa da Esquina').should('be.visible')
-      cy.contains('h2', 'Sobre o bar').should('be.visible')
+      cy.contains('h2', 'Localização').should('be.visible')
       cy.contains('Dados de demonstração.').should('not.exist')
-      cy.contains('Terça a domingo').should('be.visible')
+      cy.contains('Tu-Su 17:00-00:00').should('be.visible')
       cy.get('.bar-map .map-marker').should('have.length', 1)
       cy.get('[role="switch"]').click()
       cy.title().should('eq', 'Casa da Esquina — GeoBar')
       cy.get('button[aria-label="English"]').click()
-      cy.contains('h2', 'About the bar').should('be.visible')
+      cy.contains('h2', 'Location').should('be.visible')
       cy.reload()
-      cy.contains('Tuesday to Sunday').should('be.visible')
+      cy.contains('Tu-Su 17:00-00:00').should('be.visible')
       cy.get('html').should('have.attr', 'data-theme', 'dark')
       cy.title().should('eq', 'Casa da Esquina — GeoBar')
       cy.document()
@@ -277,9 +277,9 @@ for (const viewport of viewports) {
       cy.get('.bar-map').scrollIntoView()
       cy.get('.bar-map .map-marker[title="Balcão da Prosa"]').click()
       cy.get('.leaflet-popup').contains('a', 'Ver detalhes').click()
-      cy.location('pathname').should('eq', '/bars/balcao-da-prosa')
+      cy.location('pathname').should('eq', '/bars/3')
       cy.contains('h1', 'Balcão da Prosa').should('be.visible')
-      cy.contains('Quinta a domingo').should('be.visible')
+      cy.contains('Th-Su 18:00-01:00').should('be.visible')
       cy.get('.bar-map .map-marker').should('have.length', 1)
     })
 
@@ -298,7 +298,7 @@ for (const viewport of viewports) {
 
       cy.press(Cypress.Keyboard.Keys.ENTER)
 
-      cy.location('pathname').should('eq', '/bars/balcao-da-prosa')
+      cy.location('pathname').should('eq', '/bars/3')
       cy.contains('h1', 'Balcão da Prosa').should('be.visible')
     })
 
@@ -344,7 +344,7 @@ describe('Root route and map availability', () => {
     cy.get('article').should('have.length', 3)
     cy.get('.bar-map .map-marker[title="Casa da Esquina"]').click()
     cy.get('.leaflet-popup').contains('a', 'Ver detalhes').click()
-    cy.location('pathname').should('eq', '/bars/casa-da-esquina')
+    cy.location('pathname').should('eq', '/bars/1')
     cy.contains('h1', 'Casa da Esquina').should('be.visible')
     cy.get('.bar-map .map-marker').should('have.length', 1)
   })
@@ -367,9 +367,9 @@ describe('Server-rendered metadata', () => {
   const pages = [
     { url: '/', ...pt.Metadata },
     {
-      url: '/bars/casa-da-esquina',
+      url: '/bars/1',
       title: 'Casa da Esquina — GeoBar',
-      description: pt.Places['casa-da-esquina'].description
+      description: 'Rua Mármore, 10, Santa Tereza'
     }
   ]
 

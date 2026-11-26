@@ -5,7 +5,7 @@ beforeEach(stubMapTiles)
 
 describe('Preferences across entry points', () => {
   it('restores English and dark mode when opening a bar details URL directly', () => {
-    cy.visit('/bars/quintal-do-sol', {
+    cy.visit('/bars/2', {
       onBeforeLoad: (win) => {
         win.localStorage.setItem('geobar.locale', 'en')
         win.localStorage.setItem('geobar.theme', 'dark')
@@ -13,8 +13,8 @@ describe('Preferences across entry points', () => {
     })
 
     cy.contains('h1', 'Quintal do Sol').should('be.visible')
-    cy.contains('h2', 'About the bar').should('be.visible')
-    cy.contains(en.Places['quintal-do-sol'].hours).should('be.visible')
+    cy.contains('h2', 'Location').should('be.visible')
+    cy.contains('Beer garden').should('be.visible')
     cy.get('html')
       .should('have.attr', 'lang', 'en')
       .and('have.attr', 'data-theme', 'dark')
@@ -106,7 +106,7 @@ describe('Preferences across entry points', () => {
     cy.contains('h3', 'Casa da Esquina')
       .contains('a', 'Casa da Esquina')
       .click()
-    cy.location('pathname').should('eq', '/bars/casa-da-esquina')
+    cy.location('pathname').should('eq', '/bars/1')
     cy.get('button[aria-label="English"]').click()
     cy.get('[role="switch"]').click()
     cy.contains('a', 'Back to the bars').click()
@@ -114,9 +114,9 @@ describe('Preferences across entry points', () => {
 
     cy.go('back')
 
-    cy.location('pathname').should('eq', '/bars/casa-da-esquina')
+    cy.location('pathname').should('eq', '/bars/1')
     cy.contains('h1', 'Casa da Esquina').should('be.visible')
-    cy.contains('h2', 'About the bar').should('be.visible')
+    cy.contains('h2', 'Location').should('be.visible')
     cy.title().should('eq', 'Casa da Esquina — GeoBar')
     cy.get('html').should('have.attr', 'data-theme', 'dark')
 

@@ -4,7 +4,7 @@ import { MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { Text } from '@/components/Text'
-import type { DemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
 import { MapPlaceholder } from './components/MapPlaceholder'
 
 const InteractiveMap = dynamic(
@@ -16,7 +16,7 @@ const InteractiveMap = dynamic(
 )
 
 export type BarMapProps = {
-  bars: ReadonlyArray<DemoBar>
+  bars: ReadonlyArray<Bar>
   selectedId: string | null
 }
 

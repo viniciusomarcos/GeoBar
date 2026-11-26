@@ -4,13 +4,13 @@ import type { Map as LeafletMap } from 'leaflet'
 import { createRef } from 'react'
 import { MapContainer } from 'react-leaflet'
 import { describe, expect, it, vi } from 'vitest'
-import type { DemoBar } from '@/data/demoBars'
-import { getDemoBars } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
+import { getTestBars } from '@/test/bars'
 import { renderWithIntl } from '@/test/render'
 import { cityCenter } from '../../mapConfig'
 import { MapControls } from './MapControls'
 
-const renderControls = (bars: ReadonlyArray<DemoBar>) => {
+const renderControls = (bars: ReadonlyArray<Bar>) => {
   const ref = createRef<LeafletMap>()
   const view = renderWithIntl(
     <MapContainer
@@ -38,7 +38,7 @@ const renderControls = (bars: ReadonlyArray<DemoBar>) => {
 describe('MapControls', () => {
   it('zooms in and out with the keyboard without forwarding clicks to the map', async () => {
     const user = userEvent.setup()
-    const { map } = renderControls(getDemoBars('en'))
+    const { map } = renderControls(getTestBars('en'))
     const onMapClick = vi.fn()
     map.on('click', onMapClick)
 
@@ -54,7 +54,7 @@ describe('MapControls', () => {
 
   it('fits the visible results after the user moves away from them', async () => {
     const user = userEvent.setup()
-    const bars = getDemoBars('en')
+    const bars = getTestBars('en')
     const { map } = renderControls(bars)
     map.setView([-20.1, -44.1], 12, { animate: false })
 

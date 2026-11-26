@@ -66,10 +66,10 @@ describe('HomeScreen', () => {
       'true'
     )
     expect(screen.getAllByRole('article')).toHaveLength(1)
-    expect(screen.getByText('Live music')).toBeVisible()
+    expect(screen.getByText('Pub')).toBeVisible()
     expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
       'href',
-      '/bars/balcao-da-prosa?q=balcao&neighborhood=Floresta'
+      '/bars/3?q=balcao&neighborhood=Floresta'
     )
   })
 })

@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { loadApiBar, loadApiBars, parseApiBars } from './loadApiBars'
-import { loadDemoBars } from './loadDemoBars'
 
 const apiBar = {
   id: 7,
@@ -38,18 +37,17 @@ describe('API catalog requests', () => {
         id: '7',
         name: 'Bar do Zé',
         neighborhood: 'Centro',
-        description: 'Buteco em Centro.',
-        atmosphere: 'Buteco',
-        story: 'Rua da Bahia, 100, Centro',
-        highlights: ['Buteco'],
+        description: 'Rua da Bahia, 100, Centro',
+        category: 'Buteco',
+        address: 'Rua da Bahia, 100, Centro',
         hours: 'Mo-Sa 17:00-23:00',
-        illustration: 'beer',
-        position: [-19.92, -43.94]
+        position: [-19.92, -43.94],
+        apiData: apiBar
       }
     ])
   })
 
-  it('fills in missing details with readable placeholders', () => {
+  it('keeps missing fields empty without inventing bar information', () => {
     const bars = parseApiBars(
       [
         {
@@ -63,17 +61,17 @@ describe('API catalog requests', () => {
       'en'
     )
     expect(bars[0]).toMatchObject({
-      neighborhood: 'Neighborhood not informed',
-      description: 'Beer garden in Belo Horizonte.',
-      story: 'Address not informed',
-      hours: 'Hours not informed',
-      illustration: 'garden'
+      neighborhood: 'Belo Horizonte',
+      description: 'Beer garden · Belo Horizonte',
+      category: 'Beer garden',
+      address: null,
+      hours: null
     })
   })
 
   it('uses the generic label for unknown categories', () => {
     const bars = parseApiBars([{ ...apiBar, category: 'karaoke' }], 'pt')
-    expect(bars[0]).toMatchObject({ atmosphere: 'Bar' })
+    expect(bars[0]).toMatchObject({ category: 'Bar' })
   })
 
   it('rejects failed responses', async () => {
@@ -90,15 +88,40 @@ describe('API catalog requests', () => {
     )
   })
 
-  it('switches the catalog to the API when NEXT_PUBLIC_API_URL is set', async () => {
-    vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://api.test')
-    respondWith([apiBar])
-    const bars = await loadDemoBars('pt', new AbortController().signal)
-    expect(fetch).toHaveBeenCalledWith(
-      'http://api.test/bars/all',
-      expect.anything()
+  it('accepts an empty catalog', () => {
+    expect(parseApiBars([], 'pt')).toEqual([])
+  })
+
+  it('rejects duplicate marker identifiers', () => {
+    expect(() => parseApiBars([apiBar, apiBar], 'pt')).toThrow('Duplicate API')
+  })
+
+  it.each([
+    null,
+    'unavailable',
+    [null],
+    [{ ...apiBar, id: '7' }],
+    [{ ...apiBar, id: 1.5 }],
+    [{ ...apiBar, id: -1 }],
+    [{ ...apiBar, name: ' ' }],
+    [{ ...apiBar, address: 1 }],
+    [{ ...apiBar, neighborhood: false }],
+    [{ ...apiBar, category: null }],
+    [{ ...apiBar, metadata: [] }],
+    [{ ...apiBar, metadata: null }],
+    [{ ...apiBar, latitude: Infinity }],
+    [{ ...apiBar, latitude: 91 }],
+    [{ ...apiBar, longitude: 181 }]
+  ])('rejects malformed API catalog data %#', (payload) => {
+    expect(() => parseApiBars(payload, 'pt')).toThrow('Invalid API')
+  })
+
+  it('ignores missing and blank opening hours', () => {
+    const [bar] = parseApiBars(
+      [{ ...apiBar, metadata: { opening_hours: ' ' } }],
+      'pt'
     )
-    expect(bars).toHaveLength(1)
+    expect(bar.hours).toBeNull()
   })
 })
 
@@ -115,7 +138,7 @@ describe('API bar details requests', () => {
 
   it('treats identifiers that are not numbers as missing without a request', async () => {
     vi.mocked(fetch).mockClear()
-    expect(await loadApiBar('http://api.test', 'casa-da-esquina', 'pt')).toBe(
+    expect(await loadApiBar('http://api.test', 'not-a-number', 'pt')).toBe(
       undefined
     )
     expect(fetch).not.toHaveBeenCalled()

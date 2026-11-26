@@ -1,40 +1,31 @@
-import { Beer, MapPin, Music2, TreePine } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Pressable } from '@/components/Pressable'
+import { ShouldRender } from '@/components/ShouldRender'
 import { Text } from '@/components/Text'
-import type { DemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
 import { useExplorerSearch } from '@/hooks/useExplorerSearch'
 import { captureExplorerScroll } from '@/lib/explorerScroll'
 import { getBarDetailsHref } from '@/lib/explorerSearch'
-
-const illustrations = { beer: Beer, garden: TreePine, music: Music2 }
 
 export const PlaceCard = ({
   bar,
   onSelect
 }: {
-  bar: DemoBar
+  bar: Bar
   onSelect: () => void
 }) => {
   const t = useTranslations('Explorer')
   const search = useExplorerSearch()
   const detailsHref = getBarDetailsHref(bar.id, search)
-  const Illustration = illustrations[bar.illustration]
 
   return (
     <article className="place-card">
-      <div className={`place-art place-art-${bar.illustration}`}>
-        <Text as="span" className="place-atmosphere">
-          {bar.atmosphere}
+      <div className="place-card-content">
+        <Text as="span" className="category-badge">
+          {bar.category}
         </Text>
-        <Illustration
-          aria-hidden="true"
-          className="place-illustration"
-          strokeWidth={1.1}
-        />
-      </div>
-      <div className="p-6">
-        <Text className="flex items-center gap-1.5 text-sm text-muted">
+        <Text className="mt-4 flex items-center gap-1.5 text-sm text-muted">
           <MapPin aria-hidden="true" className="size-4" />
           {bar.neighborhood}
         </Text>
@@ -47,9 +38,9 @@ export const PlaceCard = ({
             {bar.name}
           </Pressable>
         </Text>
-        <Text className="mt-3 text-base leading-7 text-muted">
-          {bar.description}
-        </Text>
+        <ShouldRender if={Boolean(bar.address)}>
+          <Text className="place-address">{bar.address}</Text>
+        </ShouldRender>
         <div className="place-actions">
           <Pressable
             href={detailsHref}

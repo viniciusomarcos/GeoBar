@@ -1,25 +1,11 @@
 import type { Locale } from '@/i18n/config'
-import type { DemoBar } from './demoBars'
-
-type ApiBar = {
-  id: number
-  name: string
-  address: string | null
-  neighborhood: string | null
-  category: string
-  metadata: Record<string, unknown>
-  latitude: number
-  longitude: number
-}
+import type { ApiBar } from './apiBar'
+import type { Bar } from './bar'
 
 type FallbackText = {
   categories: Record<string, string>
   defaultCategory: string
   city: string
-  unknownNeighborhood: string
-  unknownAddress: string
-  unknownHours: string
-  description: (category: string, place: string) => string
 }
 
 const fallbackText: Record<Locale, FallbackText> = {
@@ -31,11 +17,7 @@ const fallbackText: Record<Locale, FallbackText> = {
       biergarten: 'Cervejaria ao ar livre'
     },
     defaultCategory: 'Bar',
-    city: 'Belo Horizonte',
-    unknownNeighborhood: 'Bairro não informado',
-    unknownAddress: 'Endereço não informado',
-    unknownHours: 'Horário não informado',
-    description: (category, place) => `${category} em ${place}.`
+    city: 'Belo Horizonte'
   },
   en: {
     categories: {
@@ -45,11 +27,7 @@ const fallbackText: Record<Locale, FallbackText> = {
       biergarten: 'Beer garden'
     },
     defaultCategory: 'Bar',
-    city: 'Belo Horizonte',
-    unknownNeighborhood: 'Neighborhood not informed',
-    unknownAddress: 'Address not informed',
-    unknownHours: 'Hours not informed',
-    description: (category, place) => `${category} in ${place}.`
+    city: 'Belo Horizonte'
   }
 }
 
@@ -60,6 +38,8 @@ const isApiBar = (value: unknown): value is ApiBar => {
   const bar = value as Record<string, unknown>
   return (
     typeof bar.id === 'number' &&
+    Number.isSafeInteger(bar.id) &&
+    bar.id > 0 &&
     typeof bar.name === 'string' &&
     bar.name.trim() !== '' &&
     (bar.address === null || typeof bar.address === 'string') &&
@@ -67,35 +47,35 @@ const isApiBar = (value: unknown): value is ApiBar => {
     typeof bar.category === 'string' &&
     typeof bar.metadata === 'object' &&
     bar.metadata !== null &&
+    !Array.isArray(bar.metadata) &&
     typeof bar.latitude === 'number' &&
     Number.isFinite(bar.latitude) &&
+    Math.abs(bar.latitude) <= 90 &&
     typeof bar.longitude === 'number' &&
-    Number.isFinite(bar.longitude)
+    Number.isFinite(bar.longitude) &&
+    Math.abs(bar.longitude) <= 180
   )
 }
 
-const pickIllustration = (bar: ApiBar): DemoBar['illustration'] => {
-  if (bar.category === 'biergarten' || bar.metadata.outdoor_seating === 'yes') {
-    return 'garden'
-  }
-  return 'beer'
-}
-
-export const toDemoBar = (bar: ApiBar, locale: Locale): DemoBar => {
+export const toBar = (bar: ApiBar, locale: Locale): Bar => {
   const text = fallbackText[locale]
   const category = text.categories[bar.category] ?? text.defaultCategory
   const openingHours = bar.metadata.opening_hours
   return {
     id: String(bar.id),
     name: bar.name,
-    neighborhood: bar.neighborhood || text.unknownNeighborhood,
-    description: text.description(category, bar.neighborhood || text.city),
-    atmosphere: category,
-    story: bar.address || text.unknownAddress,
-    highlights: [category],
-    hours: typeof openingHours === 'string' ? openingHours : text.unknownHours,
-    illustration: pickIllustration(bar),
-    position: [bar.latitude, bar.longitude]
+    neighborhood: bar.neighborhood?.trim() || text.city,
+    address: bar.address?.trim() || null,
+    description:
+      bar.address?.trim() ||
+      `${category} · ${bar.neighborhood?.trim() || text.city}`,
+    category,
+    hours:
+      typeof openingHours === 'string' && openingHours.trim() !== ''
+        ? openingHours
+        : null,
+    position: [bar.latitude, bar.longitude],
+    apiData: bar
   }
 }
 
@@ -103,7 +83,10 @@ export const parseApiBars = (payload: unknown, locale: Locale) => {
   if (!Array.isArray(payload) || !payload.every(isApiBar)) {
     throw new Error('Invalid API bar catalog')
   }
-  return payload.map((bar) => toDemoBar(bar, locale))
+  if (new Set(payload.map(({ id }) => id)).size !== payload.length) {
+    throw new Error('Duplicate API bar identifiers')
+  }
+  return payload.map((bar) => toBar(bar, locale))
 }
 
 const apiBaseUrl = (apiUrl: string) => apiUrl.replace(/\/+$/, '')
@@ -128,7 +111,7 @@ export const loadApiBar = async (
   apiUrl: string,
   id: string,
   locale: Locale
-): Promise<DemoBar | undefined> => {
+): Promise<Bar | undefined> => {
   if (!/^\d+$/.test(id)) {
     return undefined
   }
@@ -146,5 +129,5 @@ export const loadApiBar = async (
   if (!isApiBar(payload)) {
     throw new Error('Invalid API bar')
   }
-  return toDemoBar(payload, locale)
+  return toBar(payload, locale)
 }

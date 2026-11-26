@@ -9,21 +9,19 @@ import { Header } from '@/components/Header'
 import { PageMetadata } from '@/components/PageMetadata'
 import { Pressable } from '@/components/Pressable'
 import { Text } from '@/components/Text'
-import { type DemoBar, getDemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
+import { toBar } from '@/data/loadApiBars'
 import { useExplorerSearch } from '@/hooks/useExplorerSearch'
 import { getExplorerHref } from '@/lib/explorerSearch'
 import { BarInformation } from './components/BarInformation'
 import { BarOverview } from './components/BarOverview'
 
-export const BarDetailsScreen = ({ bar }: { bar: DemoBar }) => {
+export const BarDetailsScreen = ({ bar }: { bar: Bar }) => {
   const locale = useLocale()
   const t = useTranslations('Details')
   const navigation = useTranslations('Navigation')
   const search = useExplorerSearch()
-  const localized = useMemo(
-    () => getDemoBar(bar.id, locale) ?? bar,
-    [bar, locale]
-  )
+  const localized = useMemo(() => toBar(bar.apiData, locale), [bar, locale])
   const bars = useMemo(() => [localized], [localized])
 
   return (
@@ -46,16 +44,19 @@ export const BarDetailsScreen = ({ bar }: { bar: DemoBar }) => {
           {t('back')}
         </Pressable>
         <BarOverview bar={localized} />
-        <div className="details-content">
-          <section aria-labelledby="about-bar">
-            <Text as="h2" id="about-bar" className="details-section-title">
-              {t('about')}
-            </Text>
-            <Text className="details-story">{localized.story}</Text>
+        <section aria-labelledby="bar-location">
+          <Text
+            as="h2"
+            id="bar-location"
+            className="details-section-title mb-5"
+          >
+            {t('location')}
+          </Text>
+          <div className="details-content">
             <BarMap bars={bars} selectedId={null} />
-          </section>
-          <BarInformation bar={localized} />
-        </div>
+            <BarInformation bar={localized} />
+          </div>
+        </section>
       </main>
       <Footer />
     </>

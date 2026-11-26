@@ -21,7 +21,7 @@ describe('Explorer scroll restoration', () => {
   })
 
   it('does not overwrite a search position from the details page', () => {
-    window.history.replaceState(null, '', '/bars/casa-da-esquina')
+    window.history.replaceState(null, '', '/bars/1')
     captureExplorerScroll()
     expect(consumeExplorerScroll('')).toBeNull()
   })

@@ -38,7 +38,11 @@ export const BarExplorer = () => {
   const search = useExplorerSearch()
   const catalog = useBarCatalog(locale)
   const neighborhoods = [
-    ...new Set(catalog.bars.map((bar) => bar.neighborhood))
+    ...new Set(
+      catalog.bars
+        .filter((bar) => bar.apiData.neighborhood?.trim())
+        .map((bar) => bar.neighborhood)
+    )
   ]
   const [draftQuery, setDraftQuery] = useState(search.query)
   const [toastVisible, setToastVisible] = useState(false)

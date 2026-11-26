@@ -52,7 +52,7 @@
     "description": "Sidewalk classics, leafy backyards, and a seat at the counter. What sounds like your kind of place?",
     "formLabel": "Find bars",
     "inputLabel": "Search bars",
-    "placeholder": "Try a name, neighborhood, or live music",
+    "placeholder": "Search by name, neighborhood, or address",
     "search": "Search",
     "neighborhoods": "Neighborhood filters",
     "allNeighborhoods": "All neighborhoods",
@@ -75,29 +75,6 @@
     "page": "Page {page} of {totalPages}",
     "range": "{start}–{end} of {total, plural, one {# bar} other {# bars}}"
   },
-  "Places": {
-    "casa-da-esquina": {
-      "description": "A sidewalk table, something cold, and a conversation with no closing time.",
-      "atmosphere": "Classic buteco",
-      "story": "A neighborhood buteco where you can take your time and let the conversation flow. Sidewalk tables come together as the evening unfolds, while sharing plates arrive at the counter.",
-      "highlights": ["Sidewalk tables", "Sharing plates", "Cold beer"],
-      "hours": "Tuesday to Sunday, 5 PM to midnight."
-    },
-    "quintal-do-sol": {
-      "description": "An open-air backyard made for a slow afternoon that turns into an evening.",
-      "atmosphere": "Outdoor seating",
-      "story": "A leafy backyard in the heart of Savassi, with room to enjoy a slow afternoon and stay into the evening. Food to share, an open-air table, and good company are all part of the plan.",
-      "highlights": ["Leafy backyard", "Outdoor seating", "Vegetarian options"],
-      "hours": "Wednesday to Sunday, noon to 11 PM."
-    },
-    "balcao-da-prosa": {
-      "description": "Good company at the counter, a little live music, and one more round.",
-      "atmosphere": "Live music",
-      "story": "A welcoming counter in Floresta for discovering music and starting a new conversation. Live performances go well with sharing plates and small groups of friends.",
-      "highlights": ["Live music", "Sharing plates", "Intimate atmosphere"],
-      "hours": "Thursday to Sunday, 6 PM to 1 AM."
-    }
-  },
   "About": {
     "eyebrow": "More than a place on the map",
     "titleFirst": "A little more local.",
@@ -112,11 +89,11 @@
   "Details": {
     "pageTitle": "{name} — GeoBar",
     "back": "Back to the bars",
-    "about": "About the bar",
     "information": "Bar information",
-    "highlights": "What you will find",
     "hours": "Opening hours",
-    "neighborhood": "Neighborhood"
+    "neighborhood": "Neighborhood",
+    "location": "Location",
+    "directions": "Get directions"
   },
   "NotFound": {
     "pageTitle": "Page not found — GeoBar",

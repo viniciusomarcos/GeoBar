@@ -1,11 +1,11 @@
 import { useTranslations } from 'next-intl'
 import { ShouldRender } from '@/components/ShouldRender'
-import type { DemoBar } from '@/data/demoBars'
+import type { Bar } from '@/data/bar'
 import { EmptyState } from './components/EmptyState'
 import { PlaceCard } from './components/PlaceCard'
 
 type ResultsProps = {
-  bars: ReadonlyArray<DemoBar>
+  bars: ReadonlyArray<Bar>
   onSelect: (id: string) => void
 }
 

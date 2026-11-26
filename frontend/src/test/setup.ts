@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { afterEach, beforeEach, vi } from 'vitest'
-import places from '../../public/data/bars.json'
+import { apiBars as places } from '@/test/bars'
 
 beforeEach(() => {
+  Object.defineProperty(Element.prototype, 'scrollIntoView', {
+    configurable: true,
+    writable: true,
+    value: vi.fn()
+  })
   vi.stubGlobal(
     'fetch',
     vi.fn().mockImplementation(async () => ({
