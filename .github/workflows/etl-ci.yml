@@ -130,3 +130,41 @@ jobs:
 
       - name: Run PostGIS integration tests
         run: pytest -m integration -v
+
+
+  deploy-backend:
+    name: Deploy backend (Render)
+    needs: [etl, infra, postgis-integration]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+    steps:
+      - name: Trigger Render deploy
+        shell: bash
+        run: |
+          if [[ -z "$RENDER_DEPLOY_HOOK" ]]; then
+            echo "::error::Missing GitHub Actions secret: RENDER_DEPLOY_HOOK"
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK"
+
+      - name: Wait for new version to be live
+        shell: bash
+        run: |
+          sleep 60
+          for attempt in $(seq 1 30); do
+            status=$(curl -s -o /dev/null -w '%{http_code}' \
+              "https://geobar-api.onrender.com/bars/nearby?lat=-19.9245&lng=-43.9352&radius=1500")
+            if [[ "$status" == "200" ]]; then
+              echo "API live: /bars/nearby -> 200"
+              exit 0
+            fi
+            echo "Attempt $attempt: /bars/nearby -> $status, waiting..."
+            sleep 20
+          done
+          echo "::error::API did not respond 200 after deploy"
+          exit 1
