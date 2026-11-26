@@ -111,7 +111,16 @@
     "hours": "Opening hours",
     "neighborhood": "Neighborhood",
     "location": "Location",
-    "directions": "Get directions"
+    "directions": "Get directions",
+    "comidaDiButeco": "Comida di Buteco 2026",
+    "cuisine": "Cuisine",
+    "phone": "Phone",
+    "website": "Website",
+    "instagram": "Instagram",
+    "amenities": "Amenities",
+    "outdoorSeating": "Outdoor seating",
+    "wheelchair": "Wheelchair accessible",
+    "wifi": "Wi-Fi"
   },
   "NotFound": {
     "pageTitle": "Page not found — GeoBar",
