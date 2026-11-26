@@ -38,7 +38,7 @@ describe('Results', () => {
     const baseBars = getTestBars('en')
     const nearbyBars = [
       { ...baseBars[0], distanceMeters: 340.4 },
-      { ...baseBars[1], distanceMeters: 1450 }
+      { ...baseBars[1], distanceMeters: 1500 }
     ]
     renderWithIntl(<Results bars={nearbyBars} onSelect={vi.fn()} />)
 
