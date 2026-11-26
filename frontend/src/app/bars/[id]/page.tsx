@@ -1,17 +1,11 @@
 import { notFound } from 'next/navigation'
+import { connection } from 'next/server'
 import { BarDetailsScreen } from '@/components/BarDetailsScreen'
-import { getDemoBar, getDemoBars } from '@/data/demoBars'
+import { getDemoBar } from '@/data/demoBars'
 import { loadApiBar } from '@/data/loadApiBars'
 import { defaultLocale } from '@/i18n/config'
 
 type BarPageProps = { params: Promise<{ id: string }> }
-
-// Bares vindos da API não são conhecidos no build, então a página
-// precisa aceitar ids que não foram gerados com antecedência.
-export const dynamicParams = true
-
-export const generateStaticParams = () =>
-  getDemoBars(defaultLocale).map(({ id }) => ({ id }))
 
 const findBar = async (id: string) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -22,6 +16,8 @@ const findBar = async (id: string) => {
 }
 
 const BarDetailsPage = async ({ params }: BarPageProps) => {
+  // API identifiers and uncached details must be resolved at request time.
+  await connection()
   const { id } = await params
   const bar = await findBar(id)
   if (!bar) {
