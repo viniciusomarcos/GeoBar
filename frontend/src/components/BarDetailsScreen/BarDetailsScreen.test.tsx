@@ -72,4 +72,43 @@ describe('BarDetailsScreen', () => {
     expect(container.querySelector('.bar-overview-art')).toBeNull()
     expect(screen.getByRole('link', { name: 'Como chegar' })).toBeVisible()
   })
+
+  it('shows Comida di Buteco badge, contacts, cuisine, and amenities when available', () => {
+    const rich = toBar(
+      {
+        ...bar.apiData,
+        metadata: {
+          dataset: 'comida_di_buteco_2026',
+          description: 'Tradicional na região desde 1995.',
+          phone: '+55 31 3222-1111',
+          website: 'https://www.botecobh.com.br',
+          instagram: '@botecobh',
+          cuisine: 'brazilian;regional',
+          outdoor_seating: 'yes',
+          wheelchair: 'yes',
+          internet_access: 'wlan'
+        }
+      },
+      'pt'
+    )
+
+    renderWithIntl(<BarDetailsScreen bar={rich} />, 'pt')
+
+    expect(screen.getByText('Comida di Buteco 2026')).toBeVisible()
+    expect(screen.getByText('Tradicional na região desde 1995.')).toBeVisible()
+    expect(screen.getByText('brazilian, regional')).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: '+55 31 3222-1111' })
+    ).toHaveAttribute('href', 'tel:+55 31 3222-1111')
+    expect(
+      screen.getByRole('link', { name: 'botecobh.com.br' })
+    ).toHaveAttribute('href', 'https://www.botecobh.com.br/')
+    expect(screen.getByRole('link', { name: '@botecobh' })).toHaveAttribute(
+      'href',
+      'https://instagram.com/botecobh'
+    )
+    expect(screen.getByText('Mesas ao ar livre')).toBeVisible()
+    expect(screen.getByText('Acessível')).toBeVisible()
+    expect(screen.getByText('Wi-Fi')).toBeVisible()
+  })
 })
