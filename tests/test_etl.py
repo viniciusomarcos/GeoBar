@@ -128,6 +128,41 @@ def test_parse_osm_elements_skips_nameless_or_coordinate_less_items() -> None:
     assert parse_osm_elements(elements) == []
 
 
+def test_parse_osm_elements_normalizes_contact_aliases_and_amenities() -> None:
+    elements: list[dict[str, Any]] = [
+        {
+            "type": "node",
+            "id": 303,
+            "lat": -19.931,
+            "lon": -43.937,
+            "tags": {
+                "name": "Bar Enriquecido",
+                "amenity": "bar",
+                "contact:phone": "+55 31 99999-0000",
+                "contact:website": "https://barenriquecido.com.br",
+                "contact:instagram": "@barenriquecido",
+                "wheelchair": "yes",
+                "internet_access": "wlan",
+                "description": "Tradicional na Savassi",
+                "addr:postcode": "30130-000",
+            },
+        }
+    ]
+
+    records = parse_osm_elements(elements)
+
+    assert len(records) == 1
+    assert records[0]["metadata"] == {
+        "phone": "+55 31 99999-0000",
+        "website": "https://barenriquecido.com.br",
+        "instagram": "@barenriquecido",
+        "wheelchair": "yes",
+        "internet_access": "wlan",
+        "description": "Tradicional na Savassi",
+        "postcode": "30130-000",
+    }
+
+
 def test_fetch_osm_bars_returns_parsed_records(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_response = MagicMock()
     fake_response.json.return_value = {

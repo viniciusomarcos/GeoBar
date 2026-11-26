@@ -1289,6 +1289,50 @@ input {
   line-height: 1.8;
 }
 
+.bar-extra-description {
+  max-width: 600px;
+  margin-top: 12px;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.edition-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  padding: 5px 12px;
+  background: var(--solid);
+  color: var(--on-solid);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bar-info-link {
+  display: inline-block;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.amenity-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: var(--surface-subtle);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .details-content {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
