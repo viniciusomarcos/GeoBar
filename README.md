@@ -96,10 +96,10 @@ by the E2E command. Fixtures are used only in tests.
 
 | Suite | Unit tests | Integration tests | E2E tests |
 | --- | ---: | ---: | ---: |
-| Frontend | 146 | 0 | 61 |
+| Frontend | 147 | 0 | 61 |
 | Backend | 21 | 0 | 0 |
 | ETL / PostGIS | 20 | 4 | 0 |
-| **Total** | **187** | **4** | **61** |
+| **Total** | **188** | **4** | **61** |
 
 Counts include desktop and mobile test cases separately, without retries.
 

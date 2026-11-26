@@ -31,6 +31,14 @@ describe('filterBars', () => {
     expect(filterBars(bars, 'marmore', null)).toEqual([bars[0]])
   })
 
+  it('handles searches for bars with no address', () => {
+    const bar = { ...bars[0], address: null }
+    const catalog = [bar, bars[1]]
+
+    expect(filterBars(catalog, 'casa', null)).toEqual([bar])
+    expect(filterBars(catalog, 'marmore', null)).toEqual([])
+  })
+
   it('matches the category of a place', () => {
     const results = filterBars(bars, 'pub', null)
 
