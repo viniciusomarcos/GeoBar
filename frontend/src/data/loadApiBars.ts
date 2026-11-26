@@ -107,6 +107,69 @@ export const loadApiBars = async (
   return parseApiBars(await response.json(), locale)
 }
 
+export type NearbyQuery = Readonly<{
+  lat: number
+  lng: number
+  radius: number
+  limit?: number
+}>
+
+type NearbyApiBar = ApiBar & Readonly<{ distance_m: number }>
+
+const isNearbyApiBar = (value: unknown): value is NearbyApiBar => {
+  if (!isApiBar(value)) {
+    return false
+  }
+  const bar = value as Record<string, unknown>
+  return (
+    typeof bar.distance_m === 'number' &&
+    Number.isFinite(bar.distance_m) &&
+    bar.distance_m >= 0
+  )
+}
+
+export const parseNearbyApiBars = (
+  payload: unknown,
+  locale: Locale
+): Array<Bar> => {
+  if (!Array.isArray(payload) || !payload.every(isNearbyApiBar)) {
+    throw new Error('Invalid API nearby bar catalog')
+  }
+  if (new Set(payload.map(({ id }) => id)).size !== payload.length) {
+    throw new Error('Duplicate API bar identifiers')
+  }
+  return payload.map((bar) => ({
+    ...toBar(bar, locale),
+    distanceMeters: bar.distance_m
+  }))
+}
+
+export const loadNearbyApiBars = async (
+  apiUrl: string,
+  query: NearbyQuery,
+  locale: Locale,
+  signal: AbortSignal
+) => {
+  const params = new URLSearchParams({
+    lat: String(query.lat),
+    lng: String(query.lng),
+    radius: String(query.radius),
+    limit: String(query.limit ?? 100)
+  })
+  const response = await fetch(
+    `${apiBaseUrl(apiUrl)}/bars/nearby?${params.toString()}`,
+    {
+      signal,
+      cache: 'no-store',
+      headers: { Accept: 'application/json' }
+    }
+  )
+  if (!response.ok) {
+    throw new Error('Unable to load nearby bars')
+  }
+  return parseNearbyApiBars(await response.json(), locale)
+}
+
 export const loadApiBar = async (
   apiUrl: string,
   id: string,

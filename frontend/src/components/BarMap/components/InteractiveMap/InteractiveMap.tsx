@@ -7,9 +7,16 @@ import type { BarMapProps } from '../../BarMap'
 import { MapControls } from './components/MapControls'
 import { MapViewport } from './components/MapViewport'
 import { PlaceMarker } from './components/PlaceMarker'
+import { RadiusOverlay } from './components/RadiusOverlay'
 import { cityCenter } from './mapConfig'
 
-export const InteractiveMap = ({ bars, selectedId }: BarMapProps) => {
+export const InteractiveMap = ({
+  bars,
+  selectedId,
+  radiusCenter = null,
+  radiusMeters,
+  onSelectLocation
+}: BarMapProps) => {
   const t = useTranslations('Map')
   const [tileError, setTileError] = useState(false)
 
@@ -35,6 +42,11 @@ export const InteractiveMap = ({ bars, selectedId }: BarMapProps) => {
         />
         <MapViewport bars={bars} />
         <MapControls bars={bars} />
+        <RadiusOverlay
+          center={radiusCenter}
+          radiusMeters={radiusMeters}
+          onSelectLocation={onSelectLocation}
+        />
         {bars.map((bar) => (
           <PlaceMarker
             key={bar.id}

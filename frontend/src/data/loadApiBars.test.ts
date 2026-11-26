@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { loadApiBar, loadApiBars, parseApiBars } from './loadApiBars'
+import {
+  loadApiBar,
+  loadApiBars,
+  loadNearbyApiBars,
+  parseApiBars,
+  parseNearbyApiBars
+} from './loadApiBars'
 
 const apiBar = {
   id: 7,
@@ -162,5 +168,53 @@ describe('API bar details requests', () => {
     await expect(loadApiBar('http://api.test', '7', 'pt')).rejects.toThrow(
       'Invalid API bar'
     )
+  })
+})
+
+describe('API nearby bar requests', () => {
+  it('loads nearby bars with distance in meters', async () => {
+    respondWith([{ ...apiBar, distance_m: 342.5 }])
+    const controller = new AbortController()
+    const bars = await loadNearbyApiBars(
+      'http://api.test/',
+      { lat: -19.932, lng: -43.938, radius: 1000 },
+      'pt',
+      controller.signal
+    )
+    expect(fetch).toHaveBeenCalledWith(
+      'http://api.test/bars/nearby?lat=-19.932&lng=-43.938&radius=1000&limit=100',
+      expect.objectContaining({ signal: controller.signal, cache: 'no-store' })
+    )
+    expect(bars[0]).toMatchObject({ id: '7', distanceMeters: 342.5 })
+  })
+
+  it('rejects failed nearby responses', async () => {
+    respondWith([], false)
+    await expect(
+      loadNearbyApiBars(
+        'http://api.test',
+        { lat: -19.932, lng: -43.938, radius: 1000 },
+        'pt',
+        new AbortController().signal
+      )
+    ).rejects.toThrow('Unable to load nearby bars')
+  })
+
+  it('rejects malformed or duplicate nearby payloads', () => {
+    expect(() => parseNearbyApiBars([{ ...apiBar }], 'pt')).toThrow(
+      'Invalid API nearby'
+    )
+    expect(() =>
+      parseNearbyApiBars([{ ...apiBar, distance_m: -5 }], 'pt')
+    ).toThrow('Invalid API nearby')
+    expect(() =>
+      parseNearbyApiBars(
+        [
+          { ...apiBar, distance_m: 100 },
+          { ...apiBar, distance_m: 120 }
+        ],
+        'pt'
+      )
+    ).toThrow('Duplicate API')
   })
 })

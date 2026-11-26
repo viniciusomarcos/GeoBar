@@ -17,7 +17,8 @@
   "Map": {
     "label": "Map of bars in Belo Horizonte",
     "title": "Find yourself in BH",
-    "hint": "Select a pin to explore a bar.",
+    "hint": "Select a pin or click anywhere on the map to search bars by radius.",
+    "radiusArea": "Search radius of {radius}",
     "loading": "Loading the map…",
     "unavailable": "The basemap could not load. You can still explore the place markers and the list below.",
     "zoomIn": "Zoom in",
@@ -73,7 +74,19 @@
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "page": "Page {page} of {totalPages}",
-    "range": "{start}–{end} of {total, plural, one {# bar} other {# bars}}"
+    "range": "{start}–{end} of {total, plural, one {# bar} other {# bars}}",
+    "radiusGroup": "Radius search",
+    "nearMe": "Near me",
+    "locating": "Locating…",
+    "clearRadius": "Clear radius",
+    "radiusHint": "Or click anywhere on the map to set the search center.",
+    "radiusOptionMeters": "{meters} m",
+    "radiusOptionKm": "{km} km",
+    "distanceMeters": "{meters} m",
+    "distanceKm": "{km} km",
+    "geoUnsupported": "Your browser does not support geolocation. Click a point on the map instead.",
+    "geoDenied": "Could not access your location. You can click directly on the map.",
+    "nearbyError": "Could not load nearby bars for this radius. Please try again."
   },
   "About": {
     "eyebrow": "More than a place on the map",

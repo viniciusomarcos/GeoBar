@@ -433,6 +433,36 @@ input {
   text-underline-offset: 3px;
 }
 
+.radius-bar {
+  margin-top: 16px;
+}
+
+.radius-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.radius-error {
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 0.875rem;
+}
+
+.distance-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .place-card {
   display: flex;
   height: 100%;

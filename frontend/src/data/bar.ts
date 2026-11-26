@@ -9,5 +9,6 @@ export type Bar = Readonly<{
   description: string
   hours: string | null
   position: readonly [latitude: number, longitude: number]
+  distanceMeters?: number
   apiData: ApiBar
 }>
