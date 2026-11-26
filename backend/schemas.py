@@ -22,3 +22,6 @@ class BarPage(BaseModel):
     page: int
     page_size: int
     total: int
+
+class NearbyBar(Bar):
+    distance_m: float
