@@ -5,8 +5,8 @@ import { Pressable } from '@/components/Pressable'
 import { ShouldRender } from '@/components/ShouldRender'
 import { Text } from '@/components/Text'
 import {
-  clampRadiusMeters,
   type Coordinates,
+  clampRadiusMeters,
   MAX_RADIUS_METERS,
   MIN_RADIUS_METERS,
   RADIUS_OPTIONS
