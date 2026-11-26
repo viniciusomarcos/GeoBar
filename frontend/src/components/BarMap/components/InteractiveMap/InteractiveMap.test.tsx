@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { getTestBars } from '@/test/bars'
 import { renderWithIntl } from '@/test/render'
 import { InteractiveMap } from './InteractiveMap'
@@ -105,5 +105,19 @@ describe('InteractiveMap', () => {
     await waitFor(() =>
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     )
+  })
+
+  it('renders the search radius circle when a center and radius are provided', () => {
+    const onSelectLocation = vi.fn()
+    const { container } = renderWithIntl(
+      <InteractiveMap
+        bars={bars}
+        selectedId={null}
+        radiusCenter={[-19.932, -43.938]}
+        radiusMeters={1000}
+        onSelectLocation={onSelectLocation}
+      />
+    )
+    expect(container.querySelector('.leaflet-interactive')).not.toBeNull()
   })
 })

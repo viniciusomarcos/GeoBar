@@ -33,4 +33,16 @@ describe('Results', () => {
       within(card).getByRole('link', { name: 'View details' })
     ).toHaveAttribute('href', `/bars/${bars[1].id}`)
   })
+
+  it('formats bar distances in meters and kilometers when available', () => {
+    const baseBars = getTestBars('en')
+    const nearbyBars = [
+      { ...baseBars[0], distanceMeters: 340.4 },
+      { ...baseBars[1], distanceMeters: 1450 }
+    ]
+    renderWithIntl(<Results bars={nearbyBars} onSelect={vi.fn()} />)
+
+    expect(screen.getByText('340 m')).toBeVisible()
+    expect(screen.getByText('1.5 km')).toBeVisible()
+  })
 })
