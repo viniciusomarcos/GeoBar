@@ -3,8 +3,13 @@ import type { Bar } from '@/data/bar'
 import { loadNearbyApiBars } from '@/data/loadApiBars'
 import type { Locale } from '@/i18n/config'
 
+export const MIN_RADIUS_METERS = 100
+export const MAX_RADIUS_METERS = 10000
 export const DEFAULT_RADIUS_METERS = 1000
 export const RADIUS_OPTIONS: ReadonlyArray<number> = [500, 1000, 2000, 5000]
+
+export const clampRadiusMeters = (value: number) =>
+  Math.min(MAX_RADIUS_METERS, Math.max(MIN_RADIUS_METERS, Math.round(value)))
 
 export type Coordinates = readonly [latitude: number, longitude: number]
 
@@ -15,7 +20,7 @@ type NearbyState = {
 
 export const useNearbyBars = (locale: Locale) => {
   const [center, setCenterState] = useState<Coordinates | null>(null)
-  const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS)
+  const [radiusMeters, setRadiusMetersState] = useState(DEFAULT_RADIUS_METERS)
   const [attempt, setAttempt] = useState(0)
   const [state, setState] = useState<NearbyState>({
     status: 'idle',
@@ -24,6 +29,10 @@ export const useNearbyBars = (locale: Locale) => {
 
   const setCenter = useCallback((coords: Coordinates) => {
     setCenterState(coords)
+  }, [])
+
+  const setRadiusMeters = useCallback((value: number) => {
+    setRadiusMetersState(clampRadiusMeters(value))
   }, [])
 
   const clear = useCallback(() => {

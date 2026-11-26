@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderWithIntl } from '@/test/render'
@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 describe('RadiusControls', () => {
-  it('lets users switch radius options and clear an active radius', async () => {
+  it('lets users switch presets, adjust the slider, type a custom radius, and clear', async () => {
     const user = userEvent.setup()
     const onChangeRadius = vi.fn()
     const onClear = vi.fn()
@@ -39,6 +39,26 @@ describe('RadiusControls', () => {
     await user.click(screen.getByRole('button', { name: '500 m' }))
     expect(onChangeRadius).toHaveBeenCalledWith(500)
 
+    const slider = screen.getByRole('slider', {
+      name: 'Ajustar raio em metros'
+    })
+    fireEvent.change(slider, { target: { value: '2500' } })
+    expect(onChangeRadius).toHaveBeenCalledWith(2500)
+
+    const input = screen.getByRole('spinbutton', {
+      name: 'Raio personalizado em metros'
+    })
+    fireEvent.change(input, { target: { value: '750' } })
+    expect(onChangeRadius).toHaveBeenCalledWith(750)
+
+    fireEvent.change(input, { target: { value: '25000' } })
+    fireEvent.blur(input)
+    expect(onChangeRadius).toHaveBeenCalledWith(10000)
+
+    fireEvent.change(input, { target: { value: '' } })
+    fireEvent.blur(input)
+    expect(input).toHaveValue(1000)
+
     await user.click(screen.getByRole('button', { name: 'Limpar raio' }))
     expect(onClear).toHaveBeenCalledOnce()
   })
@@ -60,7 +80,7 @@ describe('RadiusControls', () => {
     renderWithIntl(
       <RadiusControls
         center={null}
-        radiusMeters={1000}
+        radiusMeters={1500}
         isError={false}
         onSelectCenter={onSelectCenter}
         onChangeRadius={vi.fn()}
@@ -69,6 +89,7 @@ describe('RadiusControls', () => {
       'en'
     )
 
+    expect(screen.getByText('1.5 km')).toBeVisible()
     await user.click(screen.getByRole('button', { name: 'Near me' }))
     expect(onSelectCenter).toHaveBeenCalledWith([-19.93, -43.94])
   })

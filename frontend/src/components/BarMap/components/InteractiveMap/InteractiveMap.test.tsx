@@ -109,7 +109,7 @@ describe('InteractiveMap', () => {
 
   it('renders the search radius circle when a center and radius are provided', () => {
     const onSelectLocation = vi.fn()
-    const { container } = renderWithIntl(
+    const view = renderWithIntl(
       <InteractiveMap
         bars={bars}
         selectedId={null}
@@ -118,6 +118,17 @@ describe('InteractiveMap', () => {
         onSelectLocation={onSelectLocation}
       />
     )
-    expect(container.querySelector('.leaflet-interactive')).not.toBeNull()
+    expect(view.container.querySelector('.leaflet-interactive')).not.toBeNull()
+
+    view.rerender(
+      <InteractiveMap
+        bars={[]}
+        selectedId={null}
+        radiusCenter={[-19.932, -43.938]}
+        radiusMeters={1000}
+        onSelectLocation={onSelectLocation}
+      />
+    )
+    expect(view.container.querySelector('.leaflet-interactive')).not.toBeNull()
   })
 })

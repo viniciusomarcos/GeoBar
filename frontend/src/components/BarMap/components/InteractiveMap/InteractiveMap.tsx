@@ -40,7 +40,7 @@ export const InteractiveMap = ({
             tileload: () => setTileError(false)
           }}
         />
-        <MapViewport bars={bars} />
+        <MapViewport bars={bars} radiusCenter={radiusCenter} />
         <MapControls bars={bars} />
         <RadiusOverlay
           center={radiusCenter}

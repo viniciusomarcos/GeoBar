@@ -162,13 +162,6 @@ export const BarExplorer = () => {
         onQueryChange={setDraftQuery}
         onSubmit={handleSearch}
       />
-      <NeighborhoodFilters
-        neighborhoods={neighborhoods}
-        selected={search.neighborhood}
-        onSelect={(neighborhood) =>
-          updateExplorerSearch({ neighborhood, page: 1, selectedId: null })
-        }
-      />
       <RadiusControls
         center={nearby.center}
         radiusMeters={nearby.radiusMeters}
@@ -176,6 +169,13 @@ export const BarExplorer = () => {
         onSelectCenter={selectRadiusCenter}
         onChangeRadius={nearby.setRadiusMeters}
         onClear={nearby.clear}
+      />
+      <NeighborhoodFilters
+        neighborhoods={neighborhoods}
+        selected={search.neighborhood}
+        onSelect={(neighborhood) =>
+          updateExplorerSearch({ neighborhood, page: 1, selectedId: null })
+        }
       />
       <div className="mt-8 flex min-h-8 flex-wrap items-center justify-between gap-3">
         <ShouldRender if={catalog.status === 'success'}>
